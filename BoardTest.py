@@ -103,7 +103,7 @@ class BoardTest(unittest.TestCase):
         move = Move(Position(1,2), Position(1,3))
         b.move(move)
         b2 = Board("""
-            2 B
+            1 B
             kqbnr
             ppppp
             .....
@@ -117,7 +117,7 @@ class BoardTest(unittest.TestCase):
         move = Move(Position(1,2), Position(1,3))
         b.move(move)
         b3 = Board("""
-            3 W
+            2 W
             kqbnr
             ppppp
             .....

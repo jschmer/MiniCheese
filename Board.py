@@ -56,8 +56,11 @@ class Board(object):
         # For now, no legality checks are done
         self.board[6 - move.end.y][move.end.x - 1] = self.board[6 - move.start.y][move.start.x - 1]
         self.board[6 - move.start.y][move.start.x - 1] = '.'
-        self.move_num += 1
-        self.turn = "W" if self.turn == "B" else "B"
+        if self.turn == "W":
+            self.turn = "B"
+        else:
+            self.move_num += 1
+            self.turn = "W"
 
     def __eq__(self, other):
         return (self.move_num == other.move_num and
