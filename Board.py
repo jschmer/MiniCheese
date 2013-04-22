@@ -29,6 +29,14 @@ class Board(object):
 
         self.load_board(str_rep)
 
+    def is_own_piece(c):
+        if c.isupper():
+            return self.turn == "W"
+        elif c.islower():
+            return self.turn == "B"
+        else:
+            assert False
+
     def load_board(self, str_rep):
         # strip newlines at beginning and end
         lines = str_rep.strip().split("\n")
