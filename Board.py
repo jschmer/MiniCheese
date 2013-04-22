@@ -27,7 +27,7 @@ class Board(object):
             RNBQK
             """
 
-        self.load_board(str_rep)
+        self._load_board(str_rep)
 
     def is_own_piece(self, c):
         if not c in Board.pieces:
@@ -49,7 +49,7 @@ class Board(object):
         '''
         return []
 
-    def load_board(self, str_rep):
+    def _load_board(self, str_rep):
         # strip newlines at beginning and end
         lines = str_rep.strip().split("\n")
         if len(lines) != 7:

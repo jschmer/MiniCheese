@@ -156,5 +156,21 @@ class BoardTest(unittest.TestCase):
         self.assertFalse(b.is_own_piece('P'))
         self.assertTrue(b.is_own_piece('p'))
 
+    def test_load_from_file(self):
+        a = Board("""
+                11 W
+                ..bn.
+                pp...
+                .....
+                PP...
+                ..PPP
+                RNBQK
+                """)
+        b = Board()
+        with open("board_tests/dbg1.txt") as file:
+            b = Board(file.read())
+            self.assertEqual(a, b)
+
+
 if __name__ == "__main__": 
     unittest.main()
