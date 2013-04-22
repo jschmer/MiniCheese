@@ -21,5 +21,14 @@ class MoveTest(unittest.TestCase):
 
         self.assertEqual(str(b), "a1 -> a2")
 
+    def test_equal_operator(self):
+        b = Move(Position.from_string("a1"), Position.from_string("a2"))
+        c = Move(Position.from_string("a1"), Position.from_string("a2"))
+        self.assertEqual(b, c)
+
+        b = Move(Position.from_string("e1"), Position.from_string("a2"))
+        c = Move(Position.from_string("a1"), Position.from_string("a4"))
+        self.assertNotEqual(b, c)
+
 if __name__ == "__main__": 
     unittest.main()
