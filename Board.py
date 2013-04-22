@@ -40,6 +40,15 @@ class Board(object):
         else:
             assert False
 
+    def scan(self, pos, dx, dy, one_step = False, only_capture = False):
+        pass
+
+    def legal_moves(self):
+        '''
+        computes a list of legal moves for the current player and returns it
+        '''
+        return []
+
     def load_board(self, str_rep):
         # strip newlines at beginning and end
         lines = str_rep.strip().split("\n")
