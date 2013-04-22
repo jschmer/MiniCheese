@@ -4,7 +4,7 @@
 class Board(object):
     """Board representation of a MiniChess board"""
     colors = "BW"
-    pieces = "kqbnrpKQBNRP"
+    pieces = "kqbnrpKQBNRP."
 
     def __init__(self, str_rep = None):
         self.board = []
@@ -26,19 +26,31 @@ class Board(object):
         self.load_board(str_rep)
 
     def load_board(self, str_rep):
-        lines = str_rep.split("\n")
-        move, turn = line[0].split(" ")
+        # strip newlines at beginning and end
+        lines = str_rep.strip().split("\n")
+        if len(lines) != 7:
+            raise ValueError("Invalid board size")
+
+        move, turn = lines[0].split(" ")
         self.move = int(move)
         self.turn = turn
+        print(turn)
+        print(Board.colors)
+        if self.turn not in Board.colors:
+            raise ValueError("Invalid turn")
 
         for line in lines[1:]:
-            line = line.trim()
-            # TODO sanity check
+            line = line.strip()
+            if len(line) != 5:
+                raise ValueError("Invalid line size")
+
+            for char in line:
+                if char not in self.pieces:
+                    raise ValueError("Invalid piece")
+
             self.board.append(line)
 
     def __str__(self):
         str = "{} {}\n".format(self.move, self.turn)
         str += "\n".join(self.board)
         return str
-
-print("Board")
