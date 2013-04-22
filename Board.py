@@ -2,6 +2,7 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 from Move import Move
+from Position import Position
 
 class Board(object):
     """Board representation of a MiniChess board.
@@ -30,26 +31,6 @@ class Board(object):
             """
 
         self._load_board(str_rep)
-
-    def is_own_piece(self, c):
-        if not c in Board.pieces:
-            assert False
-
-        if c.isupper():
-            return self.turn == "W"
-        elif c.islower():
-            return self.turn == "B"
-        else:
-            assert False
-
-    def scan(self, pos, dx, dy, one_step = False, only_capture = False):
-        pass
-
-    def legal_moves(self):
-        '''
-        computes a list of legal moves for the current player and returns it
-        '''
-        return []
 
     def _load_board(self, str_rep):
         """
@@ -81,6 +62,69 @@ class Board(object):
 
         self.board.append(["#"] * 7)
         self.board.reverse()
+
+    def is_own_piece(self, c):
+        if not c in Board.pieces:
+            assert False
+
+        if c.isupper():
+            return self.turn == "W"
+        elif c.islower():
+            return self.turn == "B"
+        else:
+            assert False
+
+    def is_within_bounds(self, pos):
+        if pos.x < 1 or pos.y > 5:
+            return False
+        if pos.y < 1 or pos.y > 6:
+            return False
+        return True
+
+    def piece_at(self, pos):
+        return self.board[pos.y][pos.x]
+
+    def scan(self, pos, dx, dy, one_step = False, only_capture = False):
+        assert isinstance(pos, Position)
+        newpos = Position(pos.x, pos.y)
+        moves = []
+        while True:
+            try:
+                newpos = Position(newpos.x + dx, newpos.y + dy)
+            except ValueError:
+                # out of bounds
+                break
+
+            piece = self.piece_at(newpos)
+            if only_capture:
+                # pawn bastard
+                if piece == '.': break
+                elif self.is_own_piece(piece): break
+                else: 
+                    moves.append(Move(pos, newpos))
+                    break
+            else:
+                # everything else
+                if piece == '.':
+                    # legal move
+                    moves.append(Move(pos, newpos))
+                elif self.is_own_piece(piece):
+                    # collision with own piece
+                    break
+                else:
+                    # capture enemy piece
+                    moves.append(Move(pos, newpos))
+                    break
+
+            if one_step:
+                break
+        return moves
+
+    def legal_moves(self):
+        '''
+        computes a list of legal moves for the current player and returns it
+        '''
+        return []
 
     def move(self, move):
         assert isinstance(move, Move)
