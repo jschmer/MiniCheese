@@ -55,6 +55,10 @@ class Board(object):
         self.move_num += 1
         self.turn = "W" if self.turn == "B" else "B"
 
+    def __eq__(self, other):
+        return (self.move_num == other.move_num and
+                self.turn == other.turn and
+                self.board == other.board)
 
     def __str__(self):
         str = "{} {}\n".format(self.move_num, self.turn)

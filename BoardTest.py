@@ -106,6 +106,22 @@ class BoardTest(unittest.TestCase):
         move = Move(Position(1,2), Position(1,3))
         b.move(move)
         self.assertEqual(str(b), "3 W\nkqbnr\n.pppp\n.....\n.....\nPPPPP\nRNBQK\n")
+        
+    def test_equality(self):
+        b = Board()
+        b2 = Board()
+        self.assertTrue(b == b2)
+
+        b3 = Board("""
+            2 W
+            kqbnr
+            ppppp
+            .....
+            .....
+            PPPPP
+            RNBQK
+            """)
+        self.assertFalse(b == b3)
 
 if __name__ == "__main__": 
     unittest.main()
