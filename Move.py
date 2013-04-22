@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
-from Position import Position
-
 class Move(object):
     """description of class"""
 
