@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright © 2013 Jens Schmer, Michael Engelhard
+
 class Position(object):
     """description of class"""
     cols = "abcde"
