@@ -13,8 +13,10 @@ while True:
 
     if not a:
         continue
-
     if a == "exit":
         break
 
-    game.move(Move.from_string(a))
+    try:
+        game.move(Move.from_string(a))
+    except ValueError:
+        print("Invalid move! Try again!")

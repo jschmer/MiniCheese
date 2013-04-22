@@ -11,11 +11,11 @@ class Move(object):
         self.end   = to
 
     def __str__(self):
-        return str(self.start) + " -> " + str(self.end)
+        return str(self.start) + "-" + str(self.end)
 
     def __eq__(self, other):
         return self.start == other.start and self.end == other.end
 
     def from_string(msg):
-        start, end = msg.split(" -> ")
+        start, end = msg.split("-")
         return Move(Position.from_string(start), Position.from_string(end))

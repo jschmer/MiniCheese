@@ -31,6 +31,25 @@ class Board(object):
 
         self.load_board(str_rep)
 
+    def is_own_piece(self, c):
+        if not c in Board.pieces:
+            assert False
+
+        if c.isupper():
+            return self.turn == "W"
+        elif c.islower():
+            return self.turn == "B"
+        else:
+            assert False
+
+    def scan(self, pos, dx, dy, one_step = False, only_capture = False):
+        pass
+
+    def legal_moves(self):
+        '''
+        computes a list of legal moves for the current player and returns it
+        '''
+        return []
 
     def load_board(self, str_rep):
         """
@@ -63,7 +82,6 @@ class Board(object):
         self.board.append(["#"] * 7)
         self.board.reverse()
 
-
     def move(self, move):
         assert isinstance(move, Move)
         # For now, no legality checks are done
@@ -79,7 +97,6 @@ class Board(object):
         return (self.move_num == other.move_num and
                 self.turn == other.turn and
                 self.board == other.board)
-
 
     def __str__(self):
         result = []
