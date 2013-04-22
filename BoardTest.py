@@ -3,6 +3,8 @@
 
 import unittest 
 from Board import Board
+from Move import Move
+from Position import Position
 
 class BoardTest(unittest.TestCase):
 
@@ -15,7 +17,7 @@ class BoardTest(unittest.TestCase):
                                    [".", ".", ".", ".", "."],
                                    ["P", "P", "P", "P", "P"],
                                    ["R", "N", "B", "Q", "K"]])
-        self.assertEqual(b.move, 1)
+        self.assertEqual(b.move_num, 1)
         self.assertEqual(b.turn, "W")
 
     def test_construct_from_string(self):
@@ -34,7 +36,7 @@ class BoardTest(unittest.TestCase):
                                    ["P", "P", ".", ".", "."],
                                    [".", ".", "P", "P", "P"],
                                    ["R", "N", "B", "Q", "K"]])
-        self.assertEqual(b.move, 11)
+        self.assertEqual(b.move_num, 11)
         self.assertEqual(b.turn, "B")
 
     def test_construct_from_string_error(self):
@@ -87,7 +89,23 @@ class BoardTest(unittest.TestCase):
         b = Board()
         self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK\n")
 
+    def test_move(self):
+        b = Board("""
+            1 W
+            kqbnr
+            ppppp
+            .....
+            .....
+            PPPPP
+            RNBQK
+            """)
+        move = Move(Position(1,2), Position(1,3))
+        b.move(move)
+        self.assertEqual(str(b), "2 B\nkqbnr\n.pppp\np....\n.....\nPPPPP\nRNBQK\n")
 
+        move = Move(Position(1,2), Position(1,3))
+        b.move(move)
+        self.assertEqual(str(b), "3 W\nkqbnr\n.pppp\n.....\n.....\nPPPPP\nRNBQK\n")
 
 if __name__ == "__main__": 
     unittest.main()

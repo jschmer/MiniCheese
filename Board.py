@@ -8,7 +8,7 @@ class Board(object):
 
     def __init__(self, str_rep = None):
         self.board = []
-        self.move = 1
+        self.move_num = 1
         self.turn = "W"
 
         if str_rep == None:
@@ -31,8 +31,8 @@ class Board(object):
         if len(lines) != 7:
             raise ValueError("Invalid board size")
 
-        move, turn = lines[0].split(" ")
-        self.move = int(move)
+        move_num, turn = lines[0].split(" ")
+        self.move_num = int(move_num)
         self.turn = turn
         if self.turn not in Board.colors:
             raise ValueError("Invalid turn")
@@ -48,8 +48,16 @@ class Board(object):
 
             self.board.append(list(line))
 
+    def move(self, move):
+        # For now, no legality checks are done
+        self.board[move.end.y-1][move.end.x-1] = self.board[move.start.y-1][move.start.x-1]
+        self.board[move.start.y-1][move.start.x-1] = '.'
+        self.move_num += 1
+        self.turn = "W" if self.turn == "B" else "B"
+
+
     def __str__(self):
-        str = "{} {}\n".format(self.move, self.turn)
+        str = "{} {}\n".format(self.move_num, self.turn)
         str += "\n".join(["".join(line) for line in self.board])
         str += "\n"
         return str
