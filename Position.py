@@ -27,3 +27,6 @@ class Position(object):
 
     def __str__(self):
         return Position.cols[self.x-1]+str(self.y)
+
+    def __eq__(self, y):
+        return self.x == y.x and self.y == y.y

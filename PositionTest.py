@@ -39,6 +39,14 @@ class PositionTest(unittest.TestCase):
         b = Position(1, 4)
         self.assertEqual(str(b), "a4")
 
+    def test_equal_operator(self):
+        b = Position.from_string("a4")
+        c = Position(1, 4)
+        self.assertEqual(b, c)
+
+        b = Position.from_string("a4")
+        c = Position(4, 4)
+        self.assertNotEqual(b, c)
 
 if __name__ == "__main__": 
     unittest.main()
