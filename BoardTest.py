@@ -6,15 +6,15 @@ from Board import Board
 
 class BoardTest(unittest.TestCase):
 
-    def est_construct_default(self): 
+    def test_construct_default(self): 
         b = Board()
 
-        self.assertEqual(b.board, ["kqbnr",
-                                   "ppppp",
-                                   ".....",
-                                   ".....",
-                                   "PPPPP",
-                                   "RNBQK"])
+        self.assertEqual(b.board, [["k", "q", "b", "n", "r"],
+                                   ["p", "p", "p", "p", "p"],
+                                   [".", ".", ".", ".", "."],
+                                   [".", ".", ".", ".", "."],
+                                   ["P", "P", "P", "P", "P"],
+                                   ["R", "N", "B", "Q", "K"]])
         self.assertEqual(b.move, 1)
         self.assertEqual(b.turn, "W")
 
@@ -28,25 +28,66 @@ class BoardTest(unittest.TestCase):
             ..PPP
             RNBQK
             """)
-        self.assertEqual(b.board, ["..bn.",
-                                   "pp...",
-                                   ".....",
-                                   "PP...",
-                                   "..PPP",
-                                   "RNBQK"])
+        self.assertEqual(b.board, [[".", ".", "b", "n", "."],
+                                   ["p", "p", ".", ".", "."],
+                                   [".", ".", ".", ".", "."],
+                                   ["P", "P", ".", ".", "."],
+                                   [".", ".", "P", "P", "P"],
+                                   ["R", "N", "B", "Q", "K"]])
         self.assertEqual(b.move, 11)
         self.assertEqual(b.turn, "B")
 
     def test_construct_from_string_error(self):
-        self.assertRaises(ValueError, Board("""
-            11 Z
-            ..bn.
-            pp...
-            .....
-            PP...
-            ..PPP
-            RNBQK
-            """))
+        with self.assertRaises(ValueError):
+            b = Board("""
+                11 Z
+                ..bn.
+                pp...
+                .....
+                PP...
+                ..PPP
+                RNBQK
+                """)
+
+        with self.assertRaises(ValueError):
+            b = Board("""
+                 W
+                ..bn.
+                pp...
+                .....
+                PP...
+                ..PPP
+                RNBQK
+                """)
+
+        with self.assertRaises(ValueError):
+            b = Board("""
+                11 W
+                ..bn.
+                pp...
+                .....
+                PP...
+                ..PPP
+                RNBQK
+                RNBQK
+                """)
+
+        with self.assertRaises(ValueError):
+            b = Board("""
+                11 W
+                ..bn.
+                pp...
+                .....
+                PP...
+                ..PPP
+                RNBQX
+                """)
+
+    def test_string_representation(self):
+        b = Board()
+        self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK\n")
+
+
 
 if __name__ == "__main__": 
     unittest.main()
