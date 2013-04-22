@@ -2,7 +2,11 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 class Board(object):
-    """Board representation of a MiniChess board"""
+    """Board representation of a MiniChess board.
+
+    The bottom left piece has the coordinates a1 or 11.
+    Top right has e6 or 56.
+    """
     colors = "BW"
     pieces = "kqbnrpKQBNRP."
 
@@ -50,8 +54,8 @@ class Board(object):
 
     def move(self, move):
         # For now, no legality checks are done
-        self.board[move.end.y-1][move.end.x-1] = self.board[move.start.y-1][move.start.x-1]
-        self.board[move.start.y-1][move.start.x-1] = '.'
+        self.board[6 - move.end.y][move.end.x - 1] = self.board[6 - move.start.y][move.start.x - 1]
+        self.board[6 - move.start.y][move.start.x - 1] = '.'
         self.move_num += 1
         self.turn = "W" if self.turn == "B" else "B"
 

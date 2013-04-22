@@ -99,14 +99,34 @@ class BoardTest(unittest.TestCase):
             PPPPP
             RNBQK
             """)
-        move = Move(Position(1,2), Position(1,3))
-        b.move(move)
-        self.assertEqual(str(b), "2 B\nkqbnr\n.pppp\np....\n.....\nPPPPP\nRNBQK\n")
 
         move = Move(Position(1,2), Position(1,3))
         b.move(move)
-        self.assertEqual(str(b), "3 W\nkqbnr\n.pppp\n.....\n.....\nPPPPP\nRNBQK\n")
-        
+        b2 = Board("""
+            2 B
+            kqbnr
+            ppppp
+            .....
+            P....
+            .PPPP
+            RNBQK
+            """)
+
+        self.assertEqual(b, b2)
+
+        move = Move(Position(1,2), Position(1,3))
+        b.move(move)
+        b3 = Board("""
+            3 W
+            kqbnr
+            ppppp
+            .....
+            .....
+            .PPPP
+            RNBQK
+            """)
+        self.assertEqual(b, b3)
+
     def test_equality(self):
         b = Board()
         b2 = Board()
