@@ -34,8 +34,6 @@ class Board(object):
         move, turn = lines[0].split(" ")
         self.move = int(move)
         self.turn = turn
-        print(turn)
-        print(Board.colors)
         if self.turn not in Board.colors:
             raise ValueError("Invalid turn")
 
@@ -48,9 +46,10 @@ class Board(object):
                 if char not in self.pieces:
                     raise ValueError("Invalid piece")
 
-            self.board.append(line)
+            self.board.append(list(line))
 
     def __str__(self):
         str = "{} {}\n".format(self.move, self.turn)
-        str += "\n".join(self.board)
+        str += "\n".join(["".join(line) for line in self.board])
+        str += "\n"
         return str
