@@ -150,7 +150,7 @@ class BoardTest(unittest.TestCase):
         self.assertTrue(b.is_own_piece('P'))
         self.assertFalse(b.is_own_piece('p'))
 
-        b.move(Move.from_string("a1 -> a2"))
+        b.move(Move.from_string("a1-a2"))
 
         # blacks turn
         self.assertFalse(b.is_own_piece('P'))
