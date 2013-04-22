@@ -30,5 +30,9 @@ class MoveTest(unittest.TestCase):
         c = Move(Position.from_string("a1"), Position.from_string("a4"))
         self.assertNotEqual(b, c)
 
+    def test_from_string(self):
+        b = Move.from_string("a1 -> a2")
+        self.assertEqual(str(b), "a1 -> a2")
+
 if __name__ == "__main__": 
     unittest.main()
