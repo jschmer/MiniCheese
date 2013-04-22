@@ -143,5 +143,18 @@ class BoardTest(unittest.TestCase):
             """)
         self.assertFalse(b == b3)
 
+    def test_is_own_piece(self):
+        b = Board()
+        
+        # whites turn
+        self.assertTrue(b.is_own_piece('P'))
+        self.assertFalse(b.is_own_piece('p'))
+
+        b.move(Move.from_string("a1 -> a2"))
+
+        # blacks turn
+        self.assertFalse(b.is_own_piece('P'))
+        self.assertTrue(b.is_own_piece('p'))
+
 if __name__ == "__main__": 
     unittest.main()

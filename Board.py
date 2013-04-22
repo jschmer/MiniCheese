@@ -29,7 +29,10 @@ class Board(object):
 
         self.load_board(str_rep)
 
-    def is_own_piece(c):
+    def is_own_piece(self, c):
+        if not c in Board.pieces:
+            assert False
+
         if c.isupper():
             return self.turn == "W"
         elif c.islower():
