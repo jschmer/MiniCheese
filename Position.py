@@ -2,7 +2,7 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 class Position(object):
-    """description of class"""
+    """position on a MiniChess board"""
     cols = "abcde"
     rows = "123456"
 
@@ -16,9 +16,10 @@ class Position(object):
         self.y = y
 
     def from_string(msg):
-        if len(msg) > 2: raise ValueError
-        if msg[0] not in Position.cols: raise ValueError
-        if msg[1] not in Position.rows: raise ValueError
+        msg = msg.strip()
+        if len(msg) > 2: raise ValueError("Too much position information")
+        if msg[0] not in Position.cols: raise ValueError("Wrong column index")
+        if msg[1] not in Position.rows: raise ValueError("Wrong row index")
 
         x = Position.cols.index(msg[0])+1
         y = int(msg[1])
