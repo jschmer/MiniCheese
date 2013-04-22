@@ -13,7 +13,7 @@ class PositionTest(unittest.TestCase):
         self.assertEqual(b.y, 4)
 
     def test_construct_error(self): 
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "Wrong row/col index"):
             b = Position(0, 4)
 
     def test_construct_from_string(self):
@@ -23,10 +23,13 @@ class PositionTest(unittest.TestCase):
         self.assertEqual(b.y, 6)
 
     def test_construct_from_string_error(self):
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "Too much position information"):
+            b = Position.from_string("z4a")
+
+        with self.assertRaisesRegex(ValueError, "Wrong row index"):
             b = Position.from_string("a7")
 
-        with self.assertRaises(ValueError):
+        with self.assertRaisesRegex(ValueError, "Wrong column index"):
             b = Position.from_string("z4")
 
     def test_to_str(self):
