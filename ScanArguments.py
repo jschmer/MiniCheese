@@ -40,17 +40,17 @@ B = b
 # .n.n.
 
 # first row
-n = [(-1, 2),
-     (1, 2),
+n = [(-1, 2, False, False, False),
+     (1, 2, False, False, False),
 # second row
-     (-2, 1),
-     (2, 1),
+     (-2, 1, False, False, False),
+     (2, 1, False, False, False),
 # forth row
-     (-2, -1),
-     (2, -1),
+     (-2, -1, False, False, False),
+     (2, -1, False, False, False),
 # fifth
-     (-1, -2),
-     (1, -2)]
+     (-1, -2, False, False, False),
+     (1, -2, False, False, False)]
  N = n
 
 r = [(0, 1, False, False, False), 
