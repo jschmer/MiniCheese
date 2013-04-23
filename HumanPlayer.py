@@ -17,6 +17,12 @@ while True:
         break
 
     try:
-        game.move(Move.from_string(a))
+        human_move = Move.from_string(a)
+        legal_moves = game.legal_moves()
+        
+        if not human_move in legal_moves:
+            raise ValueError("Invalid move!")
+
+        game.move(human_move)
     except ValueError:
         print("Invalid move! Try again!")
