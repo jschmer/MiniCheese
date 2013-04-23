@@ -3,6 +3,7 @@
 
 import copy
 import sys
+import random
 from Board import Board
 from random import choice
 
@@ -14,7 +15,7 @@ class NegamaxPlayer(object):
         Takes a move based on a search down a few moves.
         """
         # negamax it!
-        move = self.negamax(game, 4, True)
+        move = self.negamax(game, 3, True)
         return move
 
     def negamax(self, state, max_depth, return_move = False):
@@ -40,6 +41,10 @@ class NegamaxPlayer(object):
             if value > best_value:
                 best_value = value
                 best_move = move
+            elif value == best_value:
+                if random.choice((True,False)):
+                    best_value = value
+                    best_move = move
         if return_move:
             return best_move
         else:
