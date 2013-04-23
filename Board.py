@@ -191,4 +191,4 @@ class Board(object):
         for line in reversed(self.board[1:-1]):
             result.append("".join(line[1:-1]))
 
-        return "\n".join(result) + "\n"
+        return "\n".join(result)

@@ -91,7 +91,7 @@ class BoardTest(unittest.TestCase):
 
     def test_string_representation(self):
         b = Board()
-        self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK\n")
+        self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK")
 
     def test_move(self):
         b = Board("""
