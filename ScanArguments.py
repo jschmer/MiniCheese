@@ -51,23 +51,23 @@ n = [(-1, 2, False, False, False),
 # fifth
      (-1, -2, False, False, False),
      (1, -2, False, False, False)]
- N = n
+N = n
 
 r = [(0, 1, False, False, False), 
      (0, -1, False, False, False), 
      (1, 0, False, False, False), 
-     (-1, 0, False, False, False)],
+     (-1, 0, False, False, False)]
 R = r
 
 # black pawn can only move down
 p = [(0, -1, False, True, True), 
      (-1, -1, True, False, True), 
-     (1, -1, True, False, True)],
+     (1, -1, True, False, True)]
 
 # white pawn can only move up
 P = [(0, 1, False, True, True), 
      (-1, 1, True, False, True), 
-     (1, 1, True, False, True)],
+     (1, 1, True, False, True)]
 
 
 scan_arguments = {
