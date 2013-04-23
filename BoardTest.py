@@ -303,28 +303,32 @@ class BoardTest(unittest.TestCase):
         startpos = Position(3,4)
         
         # to the right
-        movelist = b.scan(startpos, 1, 0)
+        movelist = []
+        b.scan(movelist, startpos, 1, 0)
         expected = []
         expected.append(Move.from_string("c4-d4"))
         expected.append(Move.from_string("c4-e4"))
         self.assertEqual(expected, movelist)
 
         # to the left
-        movelist = b.scan(startpos, -1, 0)
+        movelist = []
+        b.scan(movelist, startpos, -1, 0)
         expected = []
         expected.append(Move.from_string("c4-b4"))
         expected.append(Move.from_string("c4-a4"))
         self.assertEqual(expected, movelist)
 
         # to the top
-        movelist = b.scan(startpos, 0, 1)
+        movelist = []
+        b.scan(movelist, startpos, 0, 1)
         expected = []
         expected.append(Move.from_string("c4-c5"))
         expected.append(Move.from_string("c4-c6"))
         self.assertEqual(expected, movelist)
 
         # to the bottom
-        movelist = b.scan(startpos, 0, -1)
+        movelist = []
+        b.scan(movelist, startpos, 0, -1)
         expected = []
         expected.append(Move.from_string("c4-c3"))
         expected.append(Move.from_string("c4-c2"))
@@ -332,28 +336,32 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(expected, movelist)
 
         # diagonal left top
-        movelist = b.scan(startpos, -1, 1)
+        movelist = []
+        b.scan(movelist, startpos, -1, 1)
         expected = []
         expected.append(Move.from_string("c4-b5"))
         expected.append(Move.from_string("c4-a6"))
         self.assertEqual(expected, movelist)
 
         # diagonal right top
-        movelist = b.scan(startpos, 1, 1)
+        movelist = []
+        b.scan(movelist, startpos, 1, 1)
         expected = []
         expected.append(Move.from_string("c4-d5"))
         expected.append(Move.from_string("c4-e6"))
         self.assertEqual(expected, movelist)
 
         # diagonal right bottom
-        movelist = b.scan(startpos, 1, -1)
+        movelist = []
+        b.scan(movelist, startpos, 1, -1)
         expected = []
         expected.append(Move.from_string("c4-d3"))
         expected.append(Move.from_string("c4-e2"))
         self.assertEqual(expected, movelist)
 
         # diagonal left bottom
-        movelist = b.scan(startpos, -1, -1)
+        movelist = []
+        b.scan(movelist, startpos, -1, -1)
         expected = []
         expected.append(Move.from_string("c4-b3"))
         expected.append(Move.from_string("c4-a2"))
@@ -371,7 +379,8 @@ class BoardTest(unittest.TestCase):
                     """)
         startpos = Position(3,4)
         
-        movelist = b.scan(startpos, 1, 1)
+        movelist = []
+        b.scan(movelist, startpos, 1, 1)
         expected = []
         expected.append(Move.from_string("c4-d5"))
         self.assertEqual(expected, movelist)
@@ -388,7 +397,8 @@ class BoardTest(unittest.TestCase):
                     """)
         startpos = Position(1,1)
         
-        movelist = b.scan(startpos, 1, 1)
+        movelist = []
+        b.scan(movelist, startpos, 1, 1)
         expected = []
         expected.append(Move.from_string("a1-b2"))
         expected.append(Move.from_string("a1-c3"))
@@ -407,13 +417,15 @@ class BoardTest(unittest.TestCase):
         startpos = Position(2,3)
         
         # capturing right
-        movelist = b.scan(startpos, 1, 0, one_step=True)
+        movelist = []
+        b.scan(movelist, startpos, 1, 0, one_step=True)
         expected = []
         expected.append(Move.from_string("b3-c3"))
         self.assertEqual(expected, movelist)
 
         # to the top
-        movelist = b.scan(startpos, 0, 1, one_step=True)
+        movelist = []
+        b.scan(movelist, startpos, 0, 1, one_step=True)
         expected = []
         expected.append(Move.from_string("b3-b4"))
         self.assertEqual(expected, movelist)
@@ -431,18 +443,21 @@ class BoardTest(unittest.TestCase):
         startpos = Position(3,4)
         
         # to the top
-        movelist = b.scan(startpos, 0, 1, only_capture=True)
+        movelist = []
+        b.scan(movelist, startpos, 0, 1, only_capture=True)
         expected = []
         self.assertEqual(expected, movelist)
 
         # capturing enemy
-        movelist = b.scan(startpos, 1, 1, only_capture=True)
+        movelist = []
+        b.scan(movelist, startpos, 1, 1, only_capture=True)
         expected = []
         expected.append(Move.from_string("c4-d5"))
         self.assertEqual(expected, movelist)
 
         # not capturing own
-        movelist = b.scan(startpos, 0, -1, only_capture=True)
+        movelist = []
+        b.scan(movelist, startpos, 0, -1, only_capture=True)
         expected = []
         self.assertEqual(expected, movelist)
 
@@ -459,12 +474,14 @@ class BoardTest(unittest.TestCase):
         startpos = Position(3,4)
         
         # not capturing right
-        movelist = b.scan(startpos, 1, 0, no_capture=True)
+        movelist = []
+        b.scan(movelist, startpos, 1, 0, no_capture=True)
         expected = []
         self.assertEqual(expected, movelist)
 
         # to the top
-        movelist = b.scan(startpos, 0, 1, no_capture=True)
+        movelist = []
+        b.scan(movelist, startpos, 0, 1, no_capture=True)
         expected = []
         expected.append(Move.from_string("c4-c5"))
         expected.append(Move.from_string("c4-c6"))
@@ -483,13 +500,15 @@ class BoardTest(unittest.TestCase):
         startpos = Position(3,4)
         
         # to the top
-        movelist = b.scan(startpos, 0, 1, no_capture=True, one_step=True)
+        movelist = []
+        b.scan(movelist, startpos, 0, 1, no_capture=True, one_step=True)
         expected = []
         expected.append(Move.from_string("c4-c5"))
         self.assertEqual(expected, movelist)
 
         # not capturing right
-        movelist = b.scan(startpos, 1, 0, no_capture=True, one_step=True)
+        movelist = []
+        b.scan(movelist, startpos, 1, 0, no_capture=True, one_step=True)
         expected = []
         self.assertEqual(expected, movelist)
 
