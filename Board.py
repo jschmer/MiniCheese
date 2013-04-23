@@ -137,15 +137,40 @@ class Board(object):
         return []
 
     def move(self, move):
+        """The caller guarantees that the move is legal."""
         assert isinstance(move, Move)
-        # For now, no legality checks are done
-        self.board[move.end.y][move.end.x] = self.board[move.start.y][move.start.x]
+
+        old_piece_end = self.board[move.end.y][move.end.x] 
+        new_piece_end = self.board[move.start.y][move.start.x]
+
+        # pawn promotion
+        if new_piece_end == 'p' and move.end.y == 1:
+            assert self.turn == 'B'
+            new_piece_end = 'q'
+        elif new_piece_end == 'P' and move.end.y == 6:
+            assert self.turn == 'W'
+            new_piece_end = 'Q'
+
+        self.board[move.end.y][move.end.x] = new_piece_end
         self.board[move.start.y][move.start.x] = '.'
+
         if self.turn == "W":
             self.turn = "B"
         else:
             self.move_num += 1
             self.turn = "W"
+
+        # king capture and result
+        if old_piece_end == 'k':
+            result = 'W'
+        elif old_piece_end == 'K':
+            result = 'B'
+        elif self.move_num == 41:
+            result = '='
+        else:
+            result = '?'
+        return result
+
 
     def __eq__(self, other):
         return (self.move_num == other.move_num and
