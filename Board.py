@@ -3,6 +3,7 @@
 
 from Move import Move
 from Position import Position
+from ScanArguments import scan_arguments as moves_for
 
 class Board(object):
     """Board representation of a MiniChess board.
@@ -128,13 +129,18 @@ class Board(object):
         '''
         computes a list of legal moves for the current player and returns it
         '''
-        for row in self.board:
-            for field in row:
-                if field in ['#', '.']:
-                    pass
+        legal_moves = []
+        for row in range(1, 7):
+            for col in range(1, 6):
+                position = Position(col, row)
+                field = self.piece_at(position)
+                if not field in ['#', '.'] and self.is_own_piece(field):
+                    #possible_piece_moves = [(0, 1, False, False, False), (1, 0, False, False, False), (0, -1, False, False, False), (-1, 0, False, False, False)]
+                    possible_piece_moves = moves_for[field]
+                    for move in possible_piece_moves:
+                        legal_moves += self.scan(position, *move)
 
-
-        return []
+        return legal_moves
 
     def move(self, move):
         """The caller guarantees that the move is legal."""

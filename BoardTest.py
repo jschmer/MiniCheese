@@ -476,5 +476,220 @@ class BoardTest(unittest.TestCase):
         expected = []
         self.assertEqual(expected, movelist)
 
+    def test_legal_moves_rook(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    ..Rr.
+                    .....
+                    .....
+                    .....
+                    """)
+        
+        # get legal moves for white rook 'R'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("c4-d4"))
+        expected.append(Move.from_string("c4-c3"))
+        expected.append(Move.from_string("c4-c2"))
+        expected.append(Move.from_string("c4-c1"))
+        expected.append(Move.from_string("c4-b4"))
+        expected.append(Move.from_string("c4-a4"))
+        expected.append(Move.from_string("c4-c5"))
+        expected.append(Move.from_string("c4-c6"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+    def test_legal_moves_pawn(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    ..P..
+                    .....
+                    .....
+                    .....
+                    """)
+        
+        # get legal moves for white pawn 'P'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("c4-c5"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+        b = Board("""
+                    1 W
+                    .....
+                    ...r.
+                    ..P..
+                    .....
+                    .....
+                    .....
+                    """)
+        startpos = Position(3,4) #c4
+        
+        # get legal moves for white pawn 'P'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("c4-c5"))
+        expected.append(Move.from_string("c4-d5"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+        b = Board("""
+                    1 B
+                    .....
+                    ..p..
+                    ..R..
+                    .....
+                    .....
+                    .....
+                    """)
+        startpos = Position(3,5) #c5
+        
+        # get legal moves for black pawn 'p'
+        legal_moves = b.legal_moves()
+
+        expected = []
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+        b = Board("""
+                    1 B
+                    .....
+                    ..p..
+                    .P...
+                    .....
+                    .....
+                    .....
+                    """)
+        startpos = Position(3,5) #c5
+        
+        # get legal moves for black pawn 'p'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("c5-c4"))
+        expected.append(Move.from_string("c5-b4"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+    def test_legal_moves_king(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    .....
+                    .....
+                    p....
+                    K....
+                    """)
+        
+        # get legal moves for white king 'K'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("a1-a2"))
+        expected.append(Move.from_string("a1-b1"))
+        expected.append(Move.from_string("a1-b2"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+    def test_legal_moves_bishop(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    ...p.
+                    .p...
+                    .B...
+                    .....
+                    """)
+        
+        # get legal moves for white bishop 'B'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("b2-a1"))
+        expected.append(Move.from_string("b2-c3"))
+        expected.append(Move.from_string("b2-d4"))
+        expected.append(Move.from_string("b2-a3"))
+        expected.append(Move.from_string("b2-c1"))
+        
+        expected.append(Move.from_string("b2-b1"))
+        expected.append(Move.from_string("b2-a2"))
+        expected.append(Move.from_string("b2-c2"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+    def test_legal_moves_knight(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    .....
+                    .p...
+                    .....
+                    N....
+                    """)
+
+        # get legal moves for white knight 'N'
+        legal_moves = b.legal_moves()
+
+        expected = []
+        expected.append(Move.from_string("a1-b3"))
+        expected.append(Move.from_string("a1-c2"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
+    def test_legal_moves_combined(self):
+        b = Board("""
+                    1 W
+                    ..k..
+                    q..p.
+                    .....
+                    .P...
+                    ....r
+                    N...K
+                    """)
+
+        # get legal moves for all white pieces
+        legal_moves = b.legal_moves()
+
+        expected = []
+        # knight
+        expected.append(Move.from_string("a1-c2"))
+        # king
+        expected.append(Move.from_string("e1-e2"))
+        expected.append(Move.from_string("e1-d2"))
+        expected.append(Move.from_string("e1-d1"))
+        # pawn
+        expected.append(Move.from_string("b3-b4"))
+
+        self.assertEqual(len(expected), len(legal_moves))
+        for move in expected:
+            self.assertIn(move, legal_moves)
+
 if __name__ == "__main__": 
     unittest.main()
