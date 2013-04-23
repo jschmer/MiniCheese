@@ -10,14 +10,12 @@ class BoardTest(unittest.TestCase):
     def test_construct_default(self): 
         b = Board()
 
-        self.assertEqual(b.board, [list("#######"),
-                                   list("#RNBQK#"),
-                                   list("#PPPPP#"),
-                                   list("#.....#"),
-                                   list("#.....#"),
-                                   list("#ppppp#"),
-                                   list("#kqbnr#"),
-                                   list("#######")])
+        self.assertEqual(b.board, [list("RNBQK"),
+                                   list("PPPPP"),
+                                   list("....."),
+                                   list("....."),
+                                   list("ppppp"),
+                                   list("kqbnr")])
         self.assertEqual(b.move_num, 1)
         self.assertEqual(b.turn, "W")
 
@@ -31,14 +29,12 @@ class BoardTest(unittest.TestCase):
             ..PPP
             RNBQK
             """)
-        self.assertEqual(b.board, [list("#######"),
-                                   list("#RNBQK#"),
-                                   list("#..PPP#"),
-                                   list("#PP...#"),
-                                   list("#.....#"),
-                                   list("#pp...#"),
-                                   list("#..bn.#"),
-                                   list("#######")])
+        self.assertEqual(b.board, [list("RNBQK"),
+                                   list("..PPP"),
+                                   list("PP..."),
+                                   list("....."),
+                                   list("pp..."),
+                                   list("..bn.")])
         self.assertEqual(b.move_num, 11)
         self.assertEqual(b.turn, "B")
 

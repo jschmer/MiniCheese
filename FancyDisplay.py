@@ -63,29 +63,27 @@ class FancyDisplay(object):
                 black = not black
 
     def print_pieces(self, board):
-        for row in range(1, 7):
-            for col in range(1, 6):
-                position = (col, row)
-                field = board.piece_at(position)
-                self.draw_piece_at(col-1, row-1, field)
+        for position in board.positions():
+            field = board.at(position)
+            self.draw_piece_at(position[0]-1, position[1]-1, field)
 
     def print_move(self, move):
         side_len = FancyDisplay.piece_side
 
-        s = move.start
-        e = move.end
+        s = list(move.start)
+        e = list(move.end)
 
         # flip coordinate system
-        s.y = 7-s.y
-        e.y = 7-e.y
+        s[1] = 7-s[1]
+        e[1] = 7-e[1]
 
         # start and end is in the middle of the square
-        s.x -= 0.5
-        s.y -= 0.5
-        e.x -= 0.5
-        e.y -= 0.5
+        s[0] -= 0.5
+        s[1] -= 0.5
+        e[0] -= 0.5
+        e[1] -= 0.5
 
-        self.canvas.create_line(s.x*side_len, s.y*side_len, e.x*side_len, e.y*side_len, arrow=LAST, width=2, fill='#cc0000')
+        self.canvas.create_line(s[0]*side_len, s[1]*side_len, e[0]*side_len, e[1]*side_len, arrow=LAST, width=2, fill='#cc0000')
         self.update()
 
     def update(self):

@@ -61,8 +61,6 @@ class Board(object):
         if self.turn not in Board.colors:
             raise ValueError("Invalid turn")
 
-        self.board.append(["#"] * 7)
-
         for line in lines[1:]:
             line = line.strip()
             if len(line) != 5:
@@ -72,9 +70,8 @@ class Board(object):
                 if char not in self.pieces:
                     raise ValueError("Invalid piece")
 
-            self.board.append(list("#" + line + "#"))
+            self.board.append(list(line))
 
-        self.board.append(["#"] * 7)
         self.board.reverse()
 
     def is_own_piece(self, c):
@@ -99,20 +96,29 @@ class Board(object):
             return False
         return True
 
+    def positions(self):
+        for x in range(1, 6):
+            for y in range(1, 7):
+                yield (x, y)
+
     def at(self, pos):
         """
         pos is a tuple with x and y values
         (x, y)
         """
-        return self.board[pos[1]][pos[0]]
+        if not self.is_within_bounds(pos):
+            raise ValueError("Out of bounds!")
+        return self.board[pos[1]-1][pos[0]-1] 
 
     def set(self, pos, piece):
         """
         pos is a tuple with x and y values
         (x, y)
         """
+        if not self.is_within_bounds(pos):
+            raise ValueError("Out of bounds!")
         if piece in Board.pieces:
-            self.board[pos[1]][pos[0]] = piece
+            self.board[pos[1]-1][pos[0]-1] = piece
 
     def scan(self, move_list, pos, dx, dy, only_capture = False, no_capture = False, one_step=False):
         """
@@ -209,15 +215,14 @@ class Board(object):
         black_king_found = False
         white_king_found = False
 
-        # TODO: replace with self.positions iterator or something similar
-        for row in self.board:
-            for piece in row:
-                if piece == 'k':
-                    black_king_found = True
-                elif piece == 'K':
-                    white_king_found = True
-                else:
-                    score += Board.piece_values[piece]
+        for position in self.positions():
+            piece = self.at(position)
+            if piece == 'k':
+                black_king_found = True
+            elif piece == 'K':
+                white_king_found = True
+            else:
+                score += Board.piece_values[piece]
 
         if not black_king_found:
             score += 100000
@@ -244,8 +249,7 @@ class Board(object):
         result = []
         result.append("{} {}".format(self.move_num, self.turn))
 
-        # leave out the # chars
-        for line in reversed(self.board[1:-1]):
-            result.append("".join(line[1:-1]))
+        for line in reversed(self.board):
+            result.append("".join(line))
 
         return "\n".join(result)
