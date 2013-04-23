@@ -3,6 +3,7 @@
 
 from RandomPlayer import RandomPlayer
 from HumanPlayer import HumanPlayer
+from GreedyPlayer import GreedyPlayer
 from Board import Board
 import sys
 
@@ -23,11 +24,15 @@ if param0 == 'h':
     white = HumanPlayer()
 elif param0 == 'r':
     white = RandomPlayer()
+elif param0 == 'g':
+    white = GreedyPlayer()
 
 if param1 == 'h':
     black = HumanPlayer()
 elif param1 == 'r':
     black = RandomPlayer()
+elif param1 == 'g':
+    black = GreedyPlayer()
 
 game = Board()
 while True:
