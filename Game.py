@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
-#from RandomPlayer import RandomPlayer
-#from HumanPlayer import HumanPlayer
+from RandomPlayer import RandomPlayer
+from HumanPlayer import HumanPlayer
 from Board import Board
 import sys
 
@@ -25,12 +25,14 @@ elif param0 == 'r':
     white = RandomPlayer()
 
 if param1 == 'h':
-    white = HumanPlayer()
+    black = HumanPlayer()
 elif param1 == 'r':
-    white = RandomPlayer()
+    black = RandomPlayer()
 
 game = Board()
 while True:
+    print(game)
+
     # check if any legal moves exist
     legal_moves = game.legal_moves()
     if not legal_moves:
@@ -50,6 +52,7 @@ while True:
         continue
 
     result = game.move(move)
+    print("\n\nM: " + str(move))
 
     # check result
     if result == 'W':

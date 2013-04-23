@@ -3,8 +3,8 @@
 from Move import Move
 from random import choice
 
-class RandomPlayer(obeject):
-    def generate_move(game):
+class RandomPlayer(object):
+    def generate_move(self, game):
         """
         Generate and return a move for the current turn color.
         The caller ensures that a legal move exists.
