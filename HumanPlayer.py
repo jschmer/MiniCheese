@@ -23,6 +23,22 @@ while True:
         if not human_move in legal_moves:
             raise ValueError("Invalid move!")
 
-        game.move(human_move)
+        status = game.move(human_move)
+
+        if status == 'W':
+            # white wins
+            print("White wins! Congrats!")
+            break
+        elif status == 'B':
+            # black wins
+            print("Black wins! Congrats!")
+            break
+        elif status == '=':
+            # draw
+            print("A boring draw...")
+            break
+        else:
+            # nothing happend, doh!
+            pass
     except ValueError:
         print("Invalid move! Try again!")
