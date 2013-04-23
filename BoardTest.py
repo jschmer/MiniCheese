@@ -279,6 +279,30 @@ class BoardTest(unittest.TestCase):
         expected.append(Move.from_string("a1-c3"))
         self.assertEqual(expected, movelist)
 
+    def test_scan_one_step(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    .....
+                    .Kq..
+                    .....
+                    .....
+                    """)
+        startpos = Position(2,3)
+        
+        # capturing right
+        movelist = b.scan(startpos, 1, 0, one_step=True)
+        expected = []
+        expected.append(Move.from_string("b3-c3"))
+        self.assertEqual(expected, movelist)
+
+        # to the top
+        movelist = b.scan(startpos, 0, 1, one_step=True)
+        expected = []
+        expected.append(Move.from_string("b3-b4"))
+        self.assertEqual(expected, movelist)
+
     def test_scan_only_capture(self):
         b = Board("""
                     1 W
@@ -312,7 +336,7 @@ class BoardTest(unittest.TestCase):
                     1 W
                     .....
                     .....
-                    ..Pp.
+                    ..Qp.
                     .....
                     .....
                     .....
@@ -328,6 +352,30 @@ class BoardTest(unittest.TestCase):
         movelist = b.scan(startpos, 0, 1, no_capture=True)
         expected = []
         expected.append(Move.from_string("c4-c5"))
+        expected.append(Move.from_string("c4-c6"))
+        self.assertEqual(expected, movelist)
+
+    def test_scan_no_capture_one_step(self):
+        b = Board("""
+                    1 W
+                    .....
+                    .....
+                    ..Pp.
+                    .....
+                    .....
+                    .....
+                    """)
+        startpos = Position(3,4)
+        
+        # to the top
+        movelist = b.scan(startpos, 0, 1, no_capture=True, one_step=True)
+        expected = []
+        expected.append(Move.from_string("c4-c5"))
+        self.assertEqual(expected, movelist)
+
+        # not capturing right
+        movelist = b.scan(startpos, 1, 0, no_capture=True, one_step=True)
+        expected = []
         self.assertEqual(expected, movelist)
 
 if __name__ == "__main__": 
