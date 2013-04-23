@@ -99,13 +99,13 @@ class Board(object):
     def piece_at(self, pos):
         return self.board[pos.y][pos.x]
 
-    def scan(self, pos, dx, dy, only_capture = False, no_capture = False, one_step=False):
+    def scan(self, move_list, pos, dx, dy, only_capture = False, no_capture = False, one_step=False):
         """
         only_capture implies only one step
         """
         assert isinstance(pos, Position)
         newpos = Position(pos.x, pos.y)
-        moves = []
+
         while True:
             newpos = Position(newpos.x + dx, newpos.y + dy)
             if not self.is_within_bounds(newpos):
@@ -117,25 +117,24 @@ class Board(object):
                 if piece == '.': break
                 elif self.is_own_piece(piece): break
                 else: 
-                    moves.append(Move(pos, newpos))
+                    move_list.append(Move(pos, newpos))
                     break
             else:
                 # everything else
                 if piece == '.':
                     # legal move
-                    moves.append(Move(pos, newpos))
+                    move_list.append(Move(pos, newpos))
                 elif self.is_own_piece(piece):
                     # collision with own piece
                     break
                 else:
                     if no_capture == False:
                         # capture enemy piece
-                        moves.append(Move(pos, newpos))
+                        move_list.append(Move(pos, newpos))
                     break
 
             if one_step:
                 break
-        return moves
 
     def legal_moves(self):
         '''
@@ -147,10 +146,9 @@ class Board(object):
                 position = Position(col, row)
                 field = self.piece_at(position)
                 if not field in ['#', '.'] and self.is_own_piece(field):
-                    #possible_piece_moves = [(0, 1, False, False, False), (1, 0, False, False, False), (0, -1, False, False, False), (-1, 0, False, False, False)]
                     possible_piece_moves = moves_for[field]
                     for move in possible_piece_moves:
-                        legal_moves += self.scan(position, *move)
+                        self.scan(legal_moves, position, *move)
 
         return legal_moves
 
