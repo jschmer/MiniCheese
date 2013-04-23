@@ -84,9 +84,9 @@ class Board(object):
     def piece_at(self, pos):
         return self.board[pos.y][pos.x]
 
-    def scan(self, pos, dx, dy, only_capture = False, no_capture = False):
+    def scan(self, pos, dx, dy, only_capture = False, no_capture = False, one_step=False):
         """
-        only_capture or no_capture imply only one step
+        only_capture implies only one step
         """
         assert isinstance(pos, Position)
         newpos = Position(pos.x, pos.y)
@@ -115,12 +115,12 @@ class Board(object):
                     # collision with own piece
                     break
                 else:
-                    if not no_capture:
+                    if no_capture == False:
                         # capture enemy piece
                         moves.append(Move(pos, newpos))
                     break
 
-            if only_capture or no_capture:
+            if one_step:
                 break
         return moves
 
@@ -128,6 +128,12 @@ class Board(object):
         '''
         computes a list of legal moves for the current player and returns it
         '''
+        for row in self.board:
+            for field in row:
+                if field in ['#', '.']:
+                    pass
+
+
         return []
 
     def move(self, move):
