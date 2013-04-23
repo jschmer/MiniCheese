@@ -88,5 +88,5 @@ while True:
 print("#-#-#-#-#-#-#-#-#-#-#-#")
 print(result)
 print(game)
-fancy.print()
+fancy.print(game)
 input()
