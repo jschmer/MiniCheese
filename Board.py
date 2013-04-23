@@ -13,6 +13,20 @@ class Board(object):
     """
     colors = "BW"
     pieces = "kqbnrpKQBNRP."
+    piece_values = {
+        'q': -900,
+        'b': -300,
+        'n': -300,
+        'r': -500,
+        'p': -100,
+        'Q': 900,
+        'B': 300,
+        'N': 300,
+        'R': 500,
+        'P': 100,
+        '.': 0,
+        '#': 0
+    }
 
     def __init__(self, str_rep = None):
         self.board = []
@@ -176,6 +190,29 @@ class Board(object):
         else:
             result = '?'
         return result
+
+    def score(self):
+        """The score is positive if the current turn color has the better pieces."""
+        score = 0
+        # this is written as if the current turn is white
+        black_king_found = False
+        white_king_found = False
+        for row in self.board:
+            for piece in row:
+                if piece == 'k':
+                    black_king_found = True
+                elif piece == 'K':
+                    white_king_found = True
+                else:
+                    score += Board.piece_values[piece]
+
+        if not black_king_found:
+            score += 100000
+        if not white_king_found:
+            score -= 100000
+
+        # now check if the turn is actually white
+        return score if self.turn == "W" else -score
 
 
     def __eq__(self, other):

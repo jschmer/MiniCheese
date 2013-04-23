@@ -690,6 +690,40 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(len(expected), len(legal_moves))
         for move in expected:
             self.assertIn(move, legal_moves)
+    def test_get_score(self):
+        b = Board("""
+            1 W
+            ..k..
+            q..p.
+            .....
+            .P...
+            ....r
+            N...K
+            """)
+
+        self.assertEqual(b.score(), -1100)
+
+        b = Board("""
+            1 B
+            ..k..
+            q..p.
+            .....
+            .P...
+            ....r
+            N....
+            """)
+        self.assertEqual(b.score(), 101100)
+
+        b = Board("""
+            1 B
+            .....
+            q..p.
+            .....
+            .P...
+            ....r
+            N....
+            """)
+        self.assertEqual(b.score(), 1100)
 
 if __name__ == "__main__": 
     unittest.main()
