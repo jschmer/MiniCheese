@@ -20,21 +20,24 @@ while True:
      
     move = choice(legal_moves)
     status = game.move(move)
+    print("M: " + str(move))
 
     if status == 'W':
         # white wins
-        print("White wins with " + str(move) + "! Congrats!")
+        result = "White wins with " + str(move) + "! Congrats!"
         break
     elif status == 'B':
         # black wins
-        print("Black wins with " + str(move) + "! Congrats!")
+        result = "Black wins with " + str(move) + "! Congrats!"
         break
     elif status == '=':
         # draw
-        print("A boring draw...")
+        result = "A boring draw..."
         break
     else:
         # nothing happend, doh!
         pass
 
+print("")
+print(result)
 print(game)
