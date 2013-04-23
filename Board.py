@@ -105,9 +105,8 @@ class Board(object):
         """
         pos is a tuple with x and y values
         (x, y)
+        caller has to make sure that pos is within bounds!
         """
-        if not self.is_within_bounds(pos):
-            raise ValueError("Out of bounds!")
         return self.board[pos[1]-1][pos[0]-1] 
 
     def set(self, pos, piece):
