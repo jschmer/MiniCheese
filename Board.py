@@ -84,7 +84,10 @@ class Board(object):
     def piece_at(self, pos):
         return self.board[pos.y][pos.x]
 
-    def scan(self, pos, dx, dy, one_step = False, only_capture = False):
+    def scan(self, pos, dx, dy, only_capture = False, no_capture = False):
+        """
+        only_capture or no_capture imply only one step
+        """
         assert isinstance(pos, Position)
         newpos = Position(pos.x, pos.y)
         moves = []
@@ -112,11 +115,12 @@ class Board(object):
                     # collision with own piece
                     break
                 else:
-                    # capture enemy piece
-                    moves.append(Move(pos, newpos))
+                    if not no_capture:
+                        # capture enemy piece
+                        moves.append(Move(pos, newpos))
                     break
 
-            if one_step:
+            if only_capture or no_capture:
                 break
         return moves
 

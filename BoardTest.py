@@ -307,7 +307,7 @@ class BoardTest(unittest.TestCase):
         expected = []
         self.assertEqual(expected, movelist)
 
-    def test_scan_only_once(self):
+    def test_scan_no_capture(self):
         b = Board("""
                     1 W
                     .....
@@ -319,14 +319,13 @@ class BoardTest(unittest.TestCase):
                     """)
         startpos = Position(3,4)
         
-        # capture right
-        movelist = b.scan(startpos, 1, 0, one_step=True)
+        # not capturing right
+        movelist = b.scan(startpos, 1, 0, no_capture=True)
         expected = []
-        expected.append(Move.from_string("c4-d4"))
         self.assertEqual(expected, movelist)
 
         # to the top
-        movelist = b.scan(startpos, 0, 1, one_step=True)
+        movelist = b.scan(startpos, 0, 1, no_capture=True)
         expected = []
         expected.append(Move.from_string("c4-c5"))
         self.assertEqual(expected, movelist)
