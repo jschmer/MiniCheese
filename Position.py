@@ -9,9 +9,6 @@ class Position(object):
     # col, row
     # origin is left lower corner, starts with 1
     def __init__(self, x, y):
-        if x not in range(1, 6) or y not in range(1, 7):
-            raise ValueError("Wrong row/col index")
-
         self.x = x
         self.y = y
 

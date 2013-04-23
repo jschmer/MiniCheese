@@ -90,7 +90,7 @@ class Board(object):
             assert False
 
     def is_within_bounds(self, pos):
-        if pos.x < 1 or pos.y > 5:
+        if pos.x < 1 or pos.x > 5:
             return False
         if pos.y < 1 or pos.y > 6:
             return False
@@ -107,10 +107,8 @@ class Board(object):
         newpos = Position(pos.x, pos.y)
         moves = []
         while True:
-            try:
-                newpos = Position(newpos.x + dx, newpos.y + dy)
-            except ValueError:
-                # out of bounds
+            newpos = Position(newpos.x + dx, newpos.y + dy)
+            if not self.is_within_bounds(newpos):
                 break
 
             piece = self.piece_at(newpos)
@@ -214,6 +212,13 @@ class Board(object):
         # now check if the turn is actually white
         return score if self.turn == "W" else -score
 
+    def from_other(other_board):
+        """Returns a copy of other_board."""
+        new_board = Board.__new__(Board)
+        new_board.turn = other_board.turn
+        new_board.move_num = other_board.move_num
+        new_board.board = [line[:] for line in other_board.board]
+        return new_board
 
     def __eq__(self, other):
         return (self.move_num == other.move_num and

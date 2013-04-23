@@ -12,10 +12,6 @@ class PositionTest(unittest.TestCase):
         self.assertEqual(b.x, 3)
         self.assertEqual(b.y, 4)
 
-    def test_construct_error(self): 
-        with self.assertRaisesRegex(ValueError, "Wrong row/col index"):
-            b = Position(0, 4)
-
     def test_construct_from_string(self):
         b = Position.from_string("b6")
 

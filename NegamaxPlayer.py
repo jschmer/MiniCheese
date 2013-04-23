@@ -30,7 +30,7 @@ class NegamaxPlayer(object):
         best_value = -sys.maxsize
         
         for move in legal_moves:
-            newstate = copy.deepcopy(state)
+            newstate = Board.from_other(state)
             result = newstate.move(move)
             if result in ('W','B','='):
                 value = -newstate.score()

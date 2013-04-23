@@ -93,6 +93,23 @@ class BoardTest(unittest.TestCase):
         b = Board()
         self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK")
 
+    def test_is_within_bounds(self):
+        b = Board()
+        pos = Position(0, 0)
+        self.assertFalse(b.is_within_bounds(pos))
+
+        pos = Position(1, 1)
+        self.assertTrue(b.is_within_bounds(pos))
+
+        pos = Position(5, 6)
+        self.assertTrue(b.is_within_bounds(pos))
+
+        pos = Position(6, 6)
+        self.assertFalse(b.is_within_bounds(pos))
+
+        pos = Position(5, 7)
+        self.assertFalse(b.is_within_bounds(pos))
+
     def test_move(self):
         b = Board("""
             1 W

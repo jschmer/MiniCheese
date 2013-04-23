@@ -6,7 +6,7 @@ from NegamaxPlayer import NegamaxPlayer
 from Board import Board
 from Move import Move
 
-class BoardTest(unittest.TestCase):
+class NegamaxPlayerTest(unittest.TestCase):
 
     def test_negamax(self):
         board = Board("""
