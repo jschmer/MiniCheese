@@ -7,6 +7,7 @@ from GreedyPlayer import GreedyPlayer
 from NegamaxPlayer import NegamaxPlayer
 from Board import Board
 from FancyDisplay import FancyDisplay
+from Move import Move
 import sys
 
 # parse script arguments
@@ -42,10 +43,12 @@ elif param1 == 'n':
 
 game = Board()
 fancy = FancyDisplay()
+move = Move.from_string("a1-a1") # dummy start move for fancy printing
 
 while True:
     print(game)
     fancy.print(game)
+    fancy.print_move(move)
 
     # check if any legal moves exist
     legal_moves = game.legal_moves()
@@ -89,4 +92,5 @@ print("#-#-#-#-#-#-#-#-#-#-#-#")
 print(result)
 print(game)
 fancy.print(game)
+fancy.print_move(move)
 input()

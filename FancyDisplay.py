@@ -67,5 +67,24 @@ class FancyDisplay(object):
                 field = board.piece_at(position)
                 self.draw_piece_at(col-1, row-1, field)
 
+    def print_move(self, move):
+        side_len = FancyDisplay.piece_side
+
+        s = move.start
+        e = move.end
+
+        # flip coordinate system
+        s.y = 7-s.y
+        e.y = 7-e.y
+
+        # start and end is in the middle of the square
+        s.x -= 0.5
+        s.y -= 0.5
+        e.x -= 0.5
+        e.y -= 0.5
+
+        self.canvas.create_line(s.x*side_len, s.y*side_len, e.x*side_len, e.y*side_len, arrow=LAST, width=2, fill='#cc0000')
+        self.update()
+
     def update(self):
         master.update()
