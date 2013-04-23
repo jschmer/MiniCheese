@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+# Copyright © 2013 Jens Schmer, Michael Engelhard
+
 from tkinter import *
 from Position import Position
 
