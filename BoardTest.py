@@ -4,7 +4,6 @@
 import unittest 
 from Board import Board
 from Move import Move
-from Position import Position
 
 class BoardTest(unittest.TestCase):
 
@@ -95,19 +94,19 @@ class BoardTest(unittest.TestCase):
 
     def test_is_within_bounds(self):
         b = Board()
-        pos = Position(0, 0)
+        pos = (0, 0)
         self.assertFalse(b.is_within_bounds(pos))
 
-        pos = Position(1, 1)
+        pos = (1, 1)
         self.assertTrue(b.is_within_bounds(pos))
 
-        pos = Position(5, 6)
+        pos = (5, 6)
         self.assertTrue(b.is_within_bounds(pos))
 
-        pos = Position(6, 6)
+        pos = (6, 6)
         self.assertFalse(b.is_within_bounds(pos))
 
-        pos = Position(5, 7)
+        pos = (5, 7)
         self.assertFalse(b.is_within_bounds(pos))
 
     def test_move(self):
@@ -121,7 +120,7 @@ class BoardTest(unittest.TestCase):
             RNBQK
             """)
 
-        move = Move(Position(1,2), Position(1,3))
+        move = Move((1,2), (1,3))
         b.move(move)
         b2 = Board("""
             1 B
@@ -135,7 +134,7 @@ class BoardTest(unittest.TestCase):
 
         self.assertEqual(b, b2)
 
-        move = Move(Position(1,2), Position(1,3))
+        move = Move((1,2), (1,3))
         b.move(move)
         b3 = Board("""
             2 W
@@ -244,8 +243,6 @@ class BoardTest(unittest.TestCase):
         result = b.move(Move.from_string("a5-a4"))
         self.assertEqual(result, '=')
 
-
-
     def test_equality(self):
         b = Board()
         b2 = Board()
@@ -300,7 +297,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4)
+        startpos = (3,4)
         
         # to the right
         movelist = []
@@ -377,7 +374,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4)
+        startpos = (3,4)
         
         movelist = []
         b.scan(movelist, startpos, 1, 1)
@@ -395,7 +392,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     Q....
                     """)
-        startpos = Position(1,1)
+        startpos = (1,1)
         
         movelist = []
         b.scan(movelist, startpos, 1, 1)
@@ -414,7 +411,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(2,3)
+        startpos = (2,3)
         
         # capturing right
         movelist = []
@@ -440,7 +437,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4)
+        startpos = (3,4)
         
         # to the top
         movelist = []
@@ -471,7 +468,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4)
+        startpos = (3,4)
         
         # not capturing right
         movelist = []
@@ -497,7 +494,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4)
+        startpos = (3,4)
         
         # to the top
         movelist = []
@@ -570,7 +567,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,4) #c4
+        startpos = (3,4) #c4
         
         # get legal moves for white pawn 'P'
         legal_moves = b.legal_moves()
@@ -592,7 +589,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,5) #c5
+        startpos = (3,5) #c5
         
         # get legal moves for black pawn 'p'
         legal_moves = b.legal_moves()
@@ -612,7 +609,7 @@ class BoardTest(unittest.TestCase):
                     .....
                     .....
                     """)
-        startpos = Position(3,5) #c5
+        startpos = (3,5) #c5
         
         # get legal moves for black pawn 'p'
         legal_moves = b.legal_moves()
@@ -726,6 +723,7 @@ class BoardTest(unittest.TestCase):
         self.assertEqual(len(expected), len(legal_moves))
         for move in expected:
             self.assertIn(move, legal_moves)
+    
     def test_get_score(self):
         b = Board("""
             1 W
@@ -760,6 +758,15 @@ class BoardTest(unittest.TestCase):
             N....
             """)
         self.assertEqual(b.score(), 1100)
+
+    def test_at(self):
+        b = Board()
+        self.assertEqual('R', b.at((1, 1)))
+
+    def test_set(self):
+        b = Board()
+        b.set((1, 1), '.')
+        self.assertEqual('.', b.at((1, 1)))
 
 if __name__ == "__main__": 
     unittest.main()

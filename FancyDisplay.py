@@ -2,7 +2,6 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 from tkinter import *
-from Position import Position
 
 master = Tk()
 
@@ -66,7 +65,7 @@ class FancyDisplay(object):
     def print_pieces(self, board):
         for row in range(1, 7):
             for col in range(1, 6):
-                position = Position(col, row)
+                position = (col, row)
                 field = board.piece_at(position)
                 self.draw_piece_at(col-1, row-1, field)
 
