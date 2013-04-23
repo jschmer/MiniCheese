@@ -42,3 +42,5 @@ while True:
             pass
     except ValueError:
         print("Invalid move! Try again!")
+
+print(game)
