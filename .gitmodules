@@ -1,0 +1,3 @@
+[submodule "skirmish"]
+	path = skirmish
+	url = git@github.com:chromakode/skirmish.git
