@@ -6,10 +6,11 @@ import sys
 import random
 from Board import Board
 from random import choice
+import Player
 
 random.seed(0)
 
-class NegamaxPruningPlayer(object):
+class NegamaxPruningPlayer(Player.Player):
     def generate_move(self, game):
         """
         Generate and return a move for the current turn color.
@@ -19,7 +20,7 @@ class NegamaxPruningPlayer(object):
         # negamax it!
         a = -500000
         b = -a
-        value, move = self.negamax(game, 3, a, b)
+        value, move = self.negamax(game, 5, a, b)
         print("Value:", value)
         return move
 
