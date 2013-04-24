@@ -18,6 +18,7 @@ ACCEPT = "/accept?id={id}"
 OFFER = "/offer"
 
 
+## Skirmish command line arguments
 # Players white and black can be one of the following options:
     
 #   "-"                       (communicate with standard in/out)
@@ -32,7 +33,7 @@ OFFER = "/offer"
 #         rating=N              (player has rating N)
 # """
 
-commandline = ["python2", "skirmish/skirmish.py"]
+commandline = ["python2", "skirmish/skirmish.py", "-v"]
 
 # commandline for our player
 our_player_cmd = ["run", "python3", "Game.py"]
@@ -60,7 +61,4 @@ else:
     commandline.append(imcs_player_cmd)
     commandline.append(our_player_cmd)
 
-
-print(commandline)
-
-subprocess.Popen(commandline)
+subprocess.call(commandline)
