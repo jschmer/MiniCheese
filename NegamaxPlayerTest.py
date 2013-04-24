@@ -24,6 +24,7 @@ class NegamaxPlayerTest(unittest.TestCase):
         best_value, best_move = player.negamax(board, 1)
         self.assertEqual(Move.from_string("c2-c6"), best_move)
 
+
         random.seed(0)
         board = Board("""
                         1 W

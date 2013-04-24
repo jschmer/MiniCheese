@@ -6,42 +6,36 @@ from HumanPlayer import HumanPlayer
 from GreedyPlayer import GreedyPlayer
 from NegamaxPlayer import NegamaxPlayer
 from Board import Board
+from FancyDisplay import FancyDisplay
+from Move import Move
 import sys
+import argparse
 
-# parse script arguments
-player_param = sys.argv[1:]
-if len(player_param) >= 1:
-    param0 = player_param[0]
-else:
-    param0 = 'r'
-
-if len(player_param) >= 2:
-    param1 = player_param[1]
-else:
-    param1 = 'r'
+parser = argparse.ArgumentParser(description='Play a game of chess!')
+parser.add_argument('playertypes', nargs=2, choices=['h', 'r', 'g', 'n'], help='playertype of white and black')
+args = parser.parse_args()
 
 # create players
-if param0 == 'h':
-    white = HumanPlayer()
-elif param0 == 'r':
-    white = RandomPlayer()
-elif param0 == 'g':
-    white = GreedyPlayer()
-elif param0 == 'n':
-    white = NegamaxPlayer()
+players = {}
+for i, color in enumerate(('white', 'black')):
+    if args.playertypes[i] == 'h':
+        players[color] = HumanPlayer()
+    elif args.playertypes[i] == 'r':
+        players[color] = RandomPlayer()
+    elif args.playertypes[i] == 'g':
+        players[color] = GreedyPlayer()
+    elif args.playertypes[i] == 'n':
+        players[color] = NegamaxPlayer()
 
-if param1 == 'h':
-    black = HumanPlayer()
-elif param1 == 'r':
-    black = RandomPlayer()
-elif param1 == 'g':
-    black = GreedyPlayer()
-elif param1 == 'n':
-    black = NegamaxPlayer()
 
 game = Board()
+fancy = FancyDisplay()
+move = Move.from_string("a1-a1") # dummy start move for fancy printing
+
 while True:
     print(game)
+    fancy.print(game)
+    fancy.print_move(move)
 
     # check if any legal moves exist
     legal_moves = game.legal_moves()
@@ -51,9 +45,9 @@ while True:
            
     # generate move       
     if game.turn == 'W':
-        move = white.generate_move(game)
+        move = players['white'].generate_move(game)
     else:
-        move = black.generate_move(game)
+        move = players['black'].generate_move(game)
         pass
     
     # check if move is legal
@@ -84,3 +78,6 @@ while True:
 print("#-#-#-#-#-#-#-#-#-#-#-#")
 print(result)
 print(game)
+fancy.print(game)
+fancy.print_move(move)
+input()

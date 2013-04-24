@@ -2,7 +2,6 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 from Move import Move
-from Position import Position
 from ScanArguments import scan_arguments as moves_for
 
 class Board(object):
@@ -62,8 +61,6 @@ class Board(object):
         if self.turn not in Board.colors:
             raise ValueError("Invalid turn")
 
-        self.board.append(["#"] * 7)
-
         for line in lines[1:]:
             line = line.strip()
             if len(line) != 5:
@@ -73,9 +70,8 @@ class Board(object):
                 if char not in self.pieces:
                     raise ValueError("Invalid piece")
 
-            self.board.append(list("#" + line + "#"))
+            self.board.append(list(line))
 
-        self.board.append(["#"] * 7)
         self.board.reverse()
 
     def is_own_piece(self, c):
@@ -90,28 +86,52 @@ class Board(object):
             assert False
 
     def is_within_bounds(self, pos):
-        if pos.x < 1 or pos.x > 5:
+        """
+        tests wheter the tuple pos (x, y) is within boards bounds
+        (1,1) to (5,6)
+        """
+        if pos[0] < 1 or pos[0] > 5:
             return False
-        if pos.y < 1 or pos.y > 6:
+        if pos[1] < 1 or pos[1] > 6:
             return False
         return True
 
-    def piece_at(self, pos):
-        return self.board[pos.y][pos.x]
+    def positions(self):
+        for x in range(1, 6):
+            for y in range(1, 7):
+                yield (x, y)
+
+    def at(self, pos):
+        """
+        pos is a tuple with x and y values
+        (x, y)
+        caller has to make sure that pos is within bounds!
+        """
+        return self.board[pos[1]-1][pos[0]-1] 
+
+    def set(self, pos, piece):
+        """
+        pos is a tuple with x and y values
+        (x, y)
+        """
+        if not self.is_within_bounds(pos):
+            raise ValueError("Out of bounds!")
+        if piece in Board.pieces:
+            self.board[pos[1]-1][pos[0]-1] = piece
 
     def scan(self, move_list, pos, dx, dy, only_capture = False, no_capture = False, one_step=False):
         """
         only_capture implies only one step
         """
-        assert isinstance(pos, Position)
-        newpos = Position(pos.x, pos.y)
+        assert isinstance(pos, tuple)
+        newpos = (pos[0], pos[1])
 
         while True:
-            newpos = Position(newpos.x + dx, newpos.y + dy)
+            newpos = (newpos[0] + dx, newpos[1] + dy)
             if not self.is_within_bounds(newpos):
                 break
 
-            piece = self.piece_at(newpos)
+            piece = self.at(newpos)
             if only_capture:
                 # pawn bastard
                 if piece == '.': break
@@ -143,8 +163,8 @@ class Board(object):
         legal_moves = []
         for row in range(1, 7):
             for col in range(1, 6):
-                position = Position(col, row)
-                field = self.piece_at(position)
+                position = (col, row)
+                field = self.at(position)
                 if not field in ['#', '.'] and self.is_own_piece(field):
                     possible_piece_moves = moves_for[field]
                     for move in possible_piece_moves:
@@ -156,19 +176,19 @@ class Board(object):
         """The caller guarantees that the move is legal."""
         assert isinstance(move, Move)
 
-        old_piece_end = self.board[move.end.y][move.end.x] 
-        new_piece_end = self.board[move.start.y][move.start.x]
+        old_piece_end = self.at(move.end)
+        new_piece_end = self.at(move.start)
 
         # pawn promotion
-        if new_piece_end == 'p' and move.end.y == 1:
+        if new_piece_end == 'p' and move.end[1] == 1:
             assert self.turn == 'B'
             new_piece_end = 'q'
-        elif new_piece_end == 'P' and move.end.y == 6:
+        elif new_piece_end == 'P' and move.end[1] == 6:
             assert self.turn == 'W'
             new_piece_end = 'Q'
 
-        self.board[move.end.y][move.end.x] = new_piece_end
-        self.board[move.start.y][move.start.x] = '.'
+        self.set(move.end, new_piece_end)
+        self.set(move.start, '.')
 
         if self.turn == "W":
             self.turn = "B"
@@ -193,14 +213,15 @@ class Board(object):
         # this is written as if the current turn is white
         black_king_found = False
         white_king_found = False
-        for row in self.board:
-            for piece in row:
-                if piece == 'k':
-                    black_king_found = True
-                elif piece == 'K':
-                    white_king_found = True
-                else:
-                    score += Board.piece_values[piece]
+
+        for position in self.positions():
+            piece = self.at(position)
+            if piece == 'k':
+                black_king_found = True
+            elif piece == 'K':
+                white_king_found = True
+            else:
+                score += Board.piece_values[piece]
 
         if not black_king_found:
             score += 100000
@@ -227,8 +248,7 @@ class Board(object):
         result = []
         result.append("{} {}".format(self.move_num, self.turn))
 
-        # leave out the # chars
-        for line in reversed(self.board[1:-1]):
-            result.append("".join(line[1:-1]))
+        for line in reversed(self.board):
+            result.append("".join(line))
 
         return "\n".join(result)

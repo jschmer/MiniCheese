@@ -16,7 +16,7 @@ def run():
                     ...K.
                     """)
     player = NegamaxPlayer()
-    best_move = player.negamax(board, 6, True)
+    best_move = player.negamax(board, 6)
 
     
 
