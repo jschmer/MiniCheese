@@ -5,7 +5,7 @@ from tkinter import *
 
 master = Tk()
 
-path_prefix = "chess_pieces\\"
+path_prefix = "chess_pieces/"
 
 piece_keys = "kqrbnpKQRBNPsS"
 
@@ -14,7 +14,7 @@ piece_img = {}
 piece_img['k'] = PhotoImage(file=path_prefix + "king_black.gif")
 piece_img['K'] = PhotoImage(file=path_prefix + "king_white.gif")
 piece_img['q'] = PhotoImage(file=path_prefix + "queen_black.gif")
-piece_img['Q'] = PhotoImage(file=path_prefix + "Queen_white.gif")
+piece_img['Q'] = PhotoImage(file=path_prefix + "queen_white.gif")
 piece_img['r'] = PhotoImage(file=path_prefix + "rook_black.gif")
 piece_img['R'] = PhotoImage(file=path_prefix + "rook_white.gif")
 piece_img['b'] = PhotoImage(file=path_prefix + "bishop_black.gif")
