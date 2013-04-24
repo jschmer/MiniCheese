@@ -2,10 +2,11 @@
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
 from Board import Board
+import Player
 import copy
 from random import choice
 
-class GreedyPlayer(object):
+class GreedyPlayer(Player.Player):
     def generate_move(self, game):
         """
         Generate and return a move for the current turn color.

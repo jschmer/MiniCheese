@@ -4,10 +4,11 @@
 import copy
 import sys
 import random
+import Player
 from Board import Board
 from random import choice
 
-class NegamaxPlayer(object):
+class NegamaxPlayer(Player.Player):
     def generate_move(self, game):
         """
         Generate and return a move for the current turn color.

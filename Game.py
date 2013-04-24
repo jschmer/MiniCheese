@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 # Copyright © 2013 Jens Schmer, Michael Engelhard
 
-from RandomPlayer import RandomPlayer
-from HumanPlayer import HumanPlayer
+from Player import HumanPlayer, SkirmishPlayer, RandomPlayer
 from GreedyPlayer import GreedyPlayer
 from NegamaxPlayer import NegamaxPlayer
 from Board import Board
@@ -12,7 +11,7 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser(description='Play a game of chess!')
-parser.add_argument('playertypes', nargs=2, choices=['h', 'r', 'g', 'n'], help='playertype of white and black')
+parser.add_argument('playertypes', nargs=2, choices=['h', 'r', 'g', 'n', 'imcs'], help='playertype of white and black')
 args = parser.parse_args()
 
 # create players
@@ -26,6 +25,8 @@ for i, color in enumerate(('white', 'black')):
         players[color] = GreedyPlayer()
     elif args.playertypes[i] == 'n':
         players[color] = NegamaxPlayer()
+    elif args.playertypes[i] == 'imcs':
+        players[color] = SkirmishPlayer()
 
 
 game = Board()
@@ -48,15 +49,25 @@ while True:
         move = players['white'].generate_move(game)
     else:
         move = players['black'].generate_move(game)
-        pass
-    
+   
     # check if move is legal
     if not move in legal_moves:
         print("Illegal move! Try again!")
         continue
 
+    # send the move to opponent
+    if game.turn == 'W':
+        players['black'].process_opponent_move(move)
+    else:
+        players['white'].process_opponent_move(move)
+
     result = game.move(move)
     print("\n\nM: " + str(move))
+
+    # skirmish wants the result
+    for player in players.values():
+        player.process_result(result)
+
 
     # check result
     if result == 'W':
@@ -80,4 +91,3 @@ print(result)
 print(game)
 fancy.print(game)
 fancy.print_move(move)
-input()
