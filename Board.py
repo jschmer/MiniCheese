@@ -101,6 +101,11 @@ class Board(object):
             for y in range(1, 7):
                 yield (x, y)
 
+    def fields(self):
+        for x in range(1, 6):
+            for y in range(1, 7):
+                yield self.board[y-1][x-1] 
+
     def at(self, pos):
         """
         pos is a tuple with x and y values
@@ -214,8 +219,8 @@ class Board(object):
         black_king_found = False
         white_king_found = False
 
-        for position in self.positions():
-            piece = self.at(position)
+        for piece in self.fields():
+            #piece = self.at(position)
             if piece == 'k':
                 black_king_found = True
             elif piece == 'K':
