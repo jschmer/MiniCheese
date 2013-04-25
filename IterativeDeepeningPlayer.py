@@ -16,8 +16,8 @@ class TimeUpError(Exception):
 
 class IterativeDeepeningPlayer(Player.Player):
     def __init__(self):
-        self.match_start_time = time()
         self.match_duration = 300
+        self.time_spent = 0
 
     def generate_move(self, game):
         """
@@ -25,12 +25,18 @@ class IterativeDeepeningPlayer(Player.Player):
         The caller ensures that a legal move exists.
         Takes a move based on a search down a few moves.
         """
+
+        move_start_time = time()
+
         # time_left = duration - time_spent
-        time_left = self.match_duration - (time() - self.match_start_time)
+        time_left = self.match_duration - self.time_spent
 
         # max_move_time = time_left / (41 - game.move_num)
-        max_move_time = time_left / (41 - game.move_num)
-        self.end_time = time() + max_move_time - 1
+        max_move_time = time_left / (41 - game.move_num + 1)
+        self.end_time = time() + max_move_time - 0.5
+        print("time_left:", time_left)
+        print("max_move_time:", max_move_time)
+
 
         # negamax could end up corrupting the board so
         # copy the game board for every negamax iteration
@@ -44,38 +50,39 @@ class IterativeDeepeningPlayer(Player.Player):
         self.node_count = 0
         shallow_value, shallow_move = self.negamax(game_copy, 1, a, b)
         while True:
-            t = time()
             # negamax could end up corrupting the board so
             # copy the game board for every negamax iteration
             game_copy = Board.from_other(game)
             try:
                 deeper_value, deeper_move = self.negamax(game_copy, depth, a, b)
             except TimeUpError:
-                print("timeout!")
                 # time expired
                 # returns the shallow move
                 break
 
             print("D:", depth, "-", "Value for", deeper_move, "=", deeper_value)
-            print(time()-t)
 
             # handle game end conditions
             if deeper_value >= 100000:
                 # found win
                 print("found win")
-                return deeper_move
+                shallow_move = deeper_move
+                break
+
             # TODO: handle draw!
             elif deeper_value <= -100000:
                 print("found loss")
                 # found draw or loss
                 # return previous move which didn't find a loss or draw
                 # which guarantees a loss in at least depth-1 moves
-                return shallow_move
+                # returns shallow_move
+                break
 
             shallow_move = deeper_move
             shallow_value = deeper_value
             depth += 1
 
+        self.time_spent += time() - move_start_time
         return shallow_move
 
     def negamax(self, state, max_depth, alpha, beta):
