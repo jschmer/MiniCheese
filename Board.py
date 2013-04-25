@@ -315,7 +315,7 @@ class Board(object):
             score = 100000
         if not white_king_found:
             score = -100000
-        if move_num == 41:
+        if self.move_num == 41:
             score = 0
 
         return score
