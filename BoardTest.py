@@ -94,9 +94,12 @@ class BoardTest(unittest.TestCase):
             ..PPP
             RNBQK
             """)
+        b.move(Move.from_string("a1-a2"))
         b2 = Board.from_other(b)
         self.assertEqual(b, b2)
-        self.assertEqual(b.score(), b2.score())
+        self.assertEqual(b.history, b2.history)
+        
+
 
     def test_string_representation(self):
         b = Board()

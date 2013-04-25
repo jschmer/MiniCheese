@@ -332,6 +332,8 @@ class Board(object):
         new_board.turn = other_board.turn
         new_board.move_num = other_board.move_num
         new_board.cur_score = other_board.cur_score
+        # history contents are immutable
+        new_board.history = other_board.history[:]
         new_board.board = [line[:] for line in other_board.board]
         return new_board
 
