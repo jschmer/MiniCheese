@@ -755,18 +755,7 @@ class BoardTest(unittest.TestCase):
             ....r
             N....
             """)
-        self.assertEqual(b.score(), 101100)
-
-        b = Board("""
-            1 B
-            .....
-            q..p.
-            .....
-            .P...
-            ....r
-            N....
-            """)
-        self.assertEqual(b.score(), 1100)
+        self.assertEqual(b.score(), 100000)
 
     def test_move_and_score(self):
         b = Board("""
@@ -786,7 +775,7 @@ class BoardTest(unittest.TestCase):
 
         # capturing white king, changed score! White is losing
         b.move(Move.from_string("e2-e1"))
-        self.assertEqual(b.score(), -101100) # score for white!
+        self.assertEqual(b.score(), -100000) # score for white!
 
         b = Board("""
             1 W
@@ -817,7 +806,25 @@ class BoardTest(unittest.TestCase):
 
         # white capturing king! gaining points!
         b.move(Move.from_string("d6-c6"))
-        self.assertEqual(b.score(), -99500) # score for black!
+        self.assertEqual(b.score(), -100000) # score for black!
+
+        # test a drawing game
+        b = Board("""
+            40 W
+            ..k..
+            .p...
+            .....
+            .....
+            Q....
+            ....K
+            """)
+        self.assertEqual(b.score(), 800) # score for white!
+        
+        b.move(Move.from_string("a2-a3"))
+        self.assertEqual(b.score(), -800) # score for black!
+        
+        b.move(Move.from_string("b5-b4"))
+        self.assertEqual(b.score(), 0) # score for white!
 
     def test_try_move_and_score(self):
         b = Board("""
@@ -833,7 +840,7 @@ class BoardTest(unittest.TestCase):
 
         # moving pawn, no change in score, Black has advantage
         b.move(Move.from_string("b3-b4"))
-        self.assertEqual(b.score_after(Move.from_string("e2-e1")), -101100) # score for white!
+        self.assertEqual(b.score_after(Move.from_string("e2-e1")), -100000) # score for white!
 
     def test_at(self):
         b = Board()

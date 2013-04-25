@@ -216,10 +216,13 @@ class Board(object):
         # king capture and result
         if old_piece_end == 'k':
             result = 'W'
+            self.cur_score = 100000
         elif old_piece_end == 'K':
             result = 'B'
+            self.cur_score = -100000
         elif self.move_num == 41:
             result = '='
+            self.cur_score = 0
         else:
             result = '?'
         return result
@@ -228,7 +231,8 @@ class Board(object):
         """
         The caller guarantees that the move is legal.
         This function just calculates the score after the given move,
-        without actually altering the board
+        without actually altering the board.
+        It's blazingly fast! :D
         """
         assert isinstance(move, Move)
 
@@ -260,6 +264,10 @@ class Board(object):
             turn = "W"
 
         # king capture and result
+        if old_piece_end == 'k':
+            score = 100000
+        elif old_piece_end == 'K':
+            score = -100000
         if move_num == 41:
             score = 0
 
@@ -268,9 +276,22 @@ class Board(object):
     def calc_score(self):
         """Calculates the score from the view of whites turn"""
         score = 0
+        black_king_found = False
+        white_king_found = False
         for piece in self.fields():
+            if piece == 'k':
+                black_king_found = True
+            elif piece == 'K':
+                white_king_found = True
             score += Board.piece_values[piece]
+
+        if not black_king_found:
+            score = 100000
+        if not white_king_found:
+            score = -100000
+
         return score
+
 
     def score(self):
         """The score is positive if the current turn color has the better pieces."""
