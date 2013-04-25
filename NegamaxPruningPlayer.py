@@ -31,9 +31,19 @@ class NegamaxPruningPlayer(Player.Player):
 
         # recursive case
         legal_moves = state.legal_moves()
-        best_value = -sys.maxsize
         
+        # pre sort the moves! best first!
+        sorted_moves = []
         for move in legal_moves:
+            score = state.score_after(move)
+            sorted_moves.append((score, move))
+
+        # sort the moves on their score
+        sorted_moves = sorted(sorted_moves, key=lambda t: t[0])
+
+        best_value = -sys.maxsize
+         
+        for value, move in sorted_moves:
             newstate = Board.from_other(state)
             result = newstate.move(move)
             if result in ('W','B'):

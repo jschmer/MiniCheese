@@ -730,7 +730,6 @@ class BoardTest(unittest.TestCase):
             ....r
             N...K
             """)
-
         self.assertEqual(b.score(), -1100)
 
         b = Board("""
@@ -754,6 +753,73 @@ class BoardTest(unittest.TestCase):
             N....
             """)
         self.assertEqual(b.score(), 1100)
+
+    def test_move_and_score(self):
+        b = Board("""
+            1 W
+            ..k..
+            q..p.
+            .....
+            .P...
+            ....r
+            N...K
+            """)
+        self.assertEqual(b.score(), -1100) # score for white!
+
+        # moving pawn, no change in score, Black has advantage
+        b.move(Move.from_string("b3-b4"))
+        self.assertEqual(b.score(), 1100) # score for black!
+
+        # capturing white king, changed score! White is losing
+        b.move(Move.from_string("e2-e1"))
+        self.assertEqual(b.score(), -101100) # score for white!
+
+        b = Board("""
+            1 W
+            ..k..
+            q..P.
+            .....
+            .p...
+            ....r
+            N...K
+            """)
+        self.assertEqual(b.score(), -1100) # score for white!
+
+        # white moving knight, captures pawn, white gains points
+        b.move(Move.from_string("a1-b3"))
+        self.assertEqual(b.score(), 1000) # score for black!
+
+        # black moving queen, doing nothing!
+        b.move(Move.from_string("a5-a4"))
+        self.assertEqual(b.score(), -1000) # score for white!
+
+        # white promoting its pawn! gaining points!
+        b.move(Move.from_string("d5-d6"))
+        self.assertEqual(b.score(), 200) # score for black!
+
+        # black capturing knight, gaining points!
+        b.move(Move.from_string("a4-b3"))
+        self.assertEqual(b.score(), -500) # score for white!
+
+        # white capturing king! gaining points!
+        b.move(Move.from_string("d6-c6"))
+        self.assertEqual(b.score(), -99500) # score for black!
+
+    def test_try_move_and_score(self):
+        b = Board("""
+            1 W
+            ..k..
+            q..p.
+            .....
+            .P...
+            ....r
+            N...K
+            """)
+        self.assertEqual(b.score_after(Move.from_string("b3-b4")), 1100) # score for black!
+
+        # moving pawn, no change in score, Black has advantage
+        b.move(Move.from_string("b3-b4"))
+        self.assertEqual(b.score_after(Move.from_string("e2-e1")), -101100) # score for white!
 
     def test_at(self):
         b = Board()
