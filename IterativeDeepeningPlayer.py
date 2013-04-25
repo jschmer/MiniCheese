@@ -111,7 +111,10 @@ class IterativeDeepeningPlayer(Player.Player):
         sorted_moves = sorted(sorted_moves, key=lambda t: t[0])
 
         best_value = -sys.maxsize
-         
+
+        # number of equal valued moves
+        num_equal_best = 0
+    
         for value, move in sorted_moves:
             result = state.move(move)
             if result in ('W','B'):
@@ -132,8 +135,9 @@ class IterativeDeepeningPlayer(Player.Player):
                 best_value = value
                 best_move = move
             elif value == best_value:
-                # prob destribution wrong
-                if random.choice((True,False)):
+                # choose one move at random
+                num_equal_best += 1
+                if random.random() > (1 / (num_equal_best)):
                     best_value = value
                     best_move = move
         return (best_value, best_move)

@@ -41,6 +41,9 @@ class NegamaxPruningPlayer(Player.Player):
         sorted_moves = sorted(sorted_moves, key=lambda t: t[0])
 
         best_value = -sys.maxsize
+
+        # number of equal valued moves
+        num_equal_best = 0
          
         for value, move in sorted_moves:
             newstate = Board.from_other(state)
@@ -52,8 +55,8 @@ class NegamaxPruningPlayer(Player.Player):
             else:
                 value = -self.negamax(newstate, max_depth-1, -beta, -alpha)[0]
 
-            if value > beta:
-                return (value, None)
+            if value >= beta:
+                return (value, move)
             if value > alpha:
                 alpha = value
 
@@ -61,7 +64,9 @@ class NegamaxPruningPlayer(Player.Player):
                 best_value = value
                 best_move = move
             elif value == best_value:
-                if random.choice((True,False)):
+                # choose one move at random
+                num_equal_best += 1
+                if random.random() > (1 / (num_equal_best)):
                     best_value = value
                     best_move = move
         return (best_value, best_move)
