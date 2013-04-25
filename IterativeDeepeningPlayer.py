@@ -38,7 +38,7 @@ class IterativeDeepeningPlayer(Player.Player):
 
         depth = 2
         self.node_count = 0
-        _, shallow_move = self.negamax(game, 1, a, b)
+        shallow_value, shallow_move = self.negamax(game, 1, a, b)
         while True:
             t = time()
             try:
@@ -66,8 +66,10 @@ class IterativeDeepeningPlayer(Player.Player):
                 return shallow_move
 
             shallow_move = deeper_move
+            shallow_value = deeper_value
             depth += 1
 
+        print("D:", depth, "-", "Value for", shallow_move, "=", shallow_value)
         return shallow_move
 
     def negamax(self, state, max_depth, alpha, beta):
