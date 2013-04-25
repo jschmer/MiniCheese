@@ -84,6 +84,20 @@ class BoardTest(unittest.TestCase):
                 RNBQX
                 """)
 
+    def test_construct_from_other(self):
+        b = Board("""
+            11 W
+            ..bn.
+            pp...
+            .....
+            PP...
+            ..PPP
+            RNBQK
+            """)
+        b2 = Board.from_other(b)
+        self.assertEqual(b, b2)
+        self.assertEqual(b.score(), b2.score())
+
     def test_string_representation(self):
         b = Board()
         self.assertEqual(str(b), "1 W\nkqbnr\nppppp\n.....\n.....\nPPPPP\nRNBQK")
