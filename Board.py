@@ -14,16 +14,16 @@ class Board(object):
     pieces = "kqbnrpKQBNRP."
     piece_values = {
         'k': -100000,
-        'q': -900,
-        'b': -300,
-        'n': -300,
-        'r': -500,
+        'q': -600,
+        'b': -250,
+        'n': -200,
+        'r': -400,
         'p': -100,
         'K': 100000,
-        'Q': 900,
-        'B': 300,
-        'N': 300,
-        'R': 500,
+        'Q': 600,
+        'B': 250,
+        'N': 200,
+        'R': 400,
         'P': 100,
         '.': 0,
         '#': 0
@@ -230,6 +230,9 @@ class Board(object):
 
         # save old state to be able to undo it later
         # ((startpos, startpiece), (endpos, endpiece), score)
+        # if self._calc_score() != new_score:
+        #     print("calc_score:", self._calc_score(), "new_score:")
+        #     print("Wtf")
         self.history.append(((move.start, piece_start), (move.end, old_piece_end), self.cur_score))
 
         self.cur_score = new_score
