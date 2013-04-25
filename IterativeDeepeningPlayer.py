@@ -32,17 +32,24 @@ class IterativeDeepeningPlayer(Player.Player):
         max_move_time = time_left / (41 - game.move_num)
         self.end_time = time() + max_move_time - 1
 
-        # negamax it!
+        # negamax could end up corrupting the board so
+        # copy the game board for every negamax iteration
+        game_copy = Board.from_other(game)
+
+        # alpha-beta values
         a = -500000
         b = -a
 
         depth = 2
         self.node_count = 0
-        shallow_value, shallow_move = self.negamax(game, 1, a, b)
+        shallow_value, shallow_move = self.negamax(game_copy, 1, a, b)
         while True:
             t = time()
+            # negamax could end up corrupting the board so
+            # copy the game board for every negamax iteration
+            game_copy = Board.from_other(game)
             try:
-                deeper_value, deeper_move = self.negamax(game, depth, a, b)
+                deeper_value, deeper_move = self.negamax(game_copy, depth, a, b)
             except TimeUpError:
                 print("timeout!")
                 # time expired
@@ -100,14 +107,15 @@ class IterativeDeepeningPlayer(Player.Player):
         best_value = -sys.maxsize
          
         for value, move in sorted_moves:
-            newstate = Board.from_other(state)
-            result = newstate.move(move)
+            result = state.move(move)
             if result in ('W','B'):
-                value = -newstate.score()
+                value = -state.score()
             elif result == '=':
                 value = 0
             else:
-                value = -self.negamax(newstate, max_depth-1, -beta, -alpha)[0]
+                value = -self.negamax(state, max_depth-1, -beta, -alpha)[0]
+
+            state.undo_last_move()
 
             if value > beta:
                 return (value, None)
