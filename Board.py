@@ -13,11 +13,13 @@ class Board(object):
     colors = "BW"
     pieces = "kqbnrpKQBNRP."
     piece_values = {
+        'k': -100000,
         'q': -900,
         'b': -300,
         'n': -300,
         'r': -500,
         'p': -100,
+        'K': 100000,
         'Q': 900,
         'B': 300,
         'N': 300,
@@ -45,6 +47,8 @@ class Board(object):
             """
 
         self._load_board(str_rep)
+
+        self.cur_score = self.calc_score()
 
     def _load_board(self, str_rep):
         """
@@ -129,7 +133,7 @@ class Board(object):
         only_capture implies only one step
         """
         assert isinstance(pos, tuple)
-        newpos = (pos[0], pos[1])
+        newpos = pos
 
         while True:
             newpos = (newpos[0] + dx, newpos[1] + dy)
@@ -178,7 +182,10 @@ class Board(object):
         return legal_moves
 
     def move(self, move):
-        """The caller guarantees that the move is legal."""
+        """
+        The caller guarantees that the move is legal.
+        The score is calculated 'on the move'
+        """
         assert isinstance(move, Move)
 
         old_piece_end = self.at(move.end)
@@ -188,10 +195,15 @@ class Board(object):
         if new_piece_end == 'p' and move.end[1] == 1:
             assert self.turn == 'B'
             new_piece_end = 'q'
+            self.cur_score -= Board.piece_values['p']
+            self.cur_score += Board.piece_values['q']
         elif new_piece_end == 'P' and move.end[1] == 6:
             assert self.turn == 'W'
             new_piece_end = 'Q'
+            self.cur_score -= Board.piece_values['P']
+            self.cur_score += Board.piece_values['Q']
 
+        self.cur_score -= Board.piece_values[old_piece_end]
         self.set(move.end, new_piece_end)
         self.set(move.start, '.')
 
@@ -211,36 +223,66 @@ class Board(object):
         else:
             result = '?'
         return result
+   
+    def score_after(self, move):
+        """
+        The caller guarantees that the move is legal.
+        This function just calculates the score after the given move,
+        without actually altering the board
+        """
+        assert isinstance(move, Move)
+
+        score = self.cur_score
+        turn = self.turn
+        move_num = self.move_num
+
+        old_piece_end = self.at(move.end)
+        new_piece_end = self.at(move.start)
+
+        # pawn promotion
+        if new_piece_end == 'p' and move.end[1] == 1:
+            assert self.turn == 'B'
+            new_piece_end = 'q'
+            score -= Board.piece_values['p']
+            score += Board.piece_values['q']
+        elif new_piece_end == 'P' and move.end[1] == 6:
+            assert self.turn == 'W'
+            new_piece_end = 'Q'
+            score -= Board.piece_values['P']
+            score += Board.piece_values['Q']
+
+        score -= Board.piece_values[old_piece_end]
+
+        if turn == "W":
+            turn = "B"
+        else:
+            move_num += 1
+            turn = "W"
+
+        # king capture and result
+        if move_num == 41:
+            score = 0
+
+        return score if turn == "W" else -score
+
+    def calc_score(self):
+        """Calculates the score from the view of whites turn"""
+        score = 0
+        for piece in self.fields():
+            score += Board.piece_values[piece]
+        return score
 
     def score(self):
         """The score is positive if the current turn color has the better pieces."""
-        score = 0
-        # this is written as if the current turn is white
-        black_king_found = False
-        white_king_found = False
-
-        for piece in self.fields():
-            #piece = self.at(position)
-            if piece == 'k':
-                black_king_found = True
-            elif piece == 'K':
-                white_king_found = True
-            else:
-                score += Board.piece_values[piece]
-
-        if not black_king_found:
-            score += 100000
-        if not white_king_found:
-            score -= 100000
-
-        # now check if the turn is actually white
-        return score if self.turn == "W" else -score
+        # self.cur_score is the score for white, negate for black!
+        return self.cur_score if self.turn == "W" else -self.cur_score
 
     def from_other(other_board):
         """Returns a copy of other_board."""
         new_board = Board.__new__(Board)
         new_board.turn = other_board.turn
         new_board.move_num = other_board.move_num
+        new_board.cur_score = other_board.cur_score
         new_board.board = [line[:] for line in other_board.board]
         return new_board
 
