@@ -8,7 +8,6 @@ from Board import Board
 from random import choice
 import Player
 
-random.seed(0)
 
 class NegamaxPruningPlayer(Player.Player):
     def generate_move(self, game):
@@ -20,7 +19,7 @@ class NegamaxPruningPlayer(Player.Player):
         # negamax it!
         a = -500000
         b = -a
-        value, move = self.negamax(game, 5, a, b)
+        value, move = self.negamax(game, 6, a, b)
         print("Value:", value)
         return move
 

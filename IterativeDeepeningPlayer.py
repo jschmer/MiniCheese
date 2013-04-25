@@ -9,11 +9,14 @@ from Board import Board
 from random import choice
 import Player
 
-random.seed(0)
+
+class TimeUpError(Exception):
+    pass
+
 
 class IterativeDeepeningPlayer(Player.Player):
     def __init__(self):
-        self.start_time = time()
+        self.match_start_time = time()
         self.match_duration = 300
 
     def generate_move(self, game):
@@ -23,11 +26,11 @@ class IterativeDeepeningPlayer(Player.Player):
         Takes a move based on a search down a few moves.
         """
         # time_left = duration - time_spent
-        time_left = self.match_duration - (time() - self.start_time)
+        time_left = self.match_duration - (time() - self.match_start_time)
 
         # max_move_time = time_left / (41 - game.move_num)
         max_move_time = time_left / (41 - game.move_num)
-        self.end_time = time() + max_move_time
+        self.end_time = time() + max_move_time - 1
 
         # negamax it!
         a = -500000
@@ -37,22 +40,26 @@ class IterativeDeepeningPlayer(Player.Player):
         self.node_count = 0
         _, shallow_move = self.negamax(game, 1, a, b)
         while True:
+            t = time()
             try:
                 deeper_value, deeper_move = self.negamax(game, depth, a, b)
-            except TimeoutError:
+            except TimeUpError:
+                print("timeout!")
                 # time expired
-
                 # returns the shallow move
                 break
 
             print("D:", depth, "-", "Value for", deeper_move, "=", deeper_value)
+            print(time()-t)
 
             # handle game end conditions
             if deeper_value >= 100000:
                 # found win
+                print("found win")
                 return deeper_move
             # TODO: handle draw!
             elif deeper_value <= -100000:
+                print("found loss")
                 # found draw or loss
                 # return previous move which didn't find a loss or draw
                 # which guarantees a loss in at least depth-1 moves
@@ -69,10 +76,10 @@ class IterativeDeepeningPlayer(Player.Player):
             return (state.score(), None)
 
         # check time
-        if self.node_count % 10000 == 0:
+        if self.node_count % 1000 == 0:
             # update time left
             if time() > self.end_time:
-                raise TimeoutError("Badäng!")
+                raise TimeUpError()
 
         self.node_count += 1
 
