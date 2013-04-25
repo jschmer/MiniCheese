@@ -123,8 +123,8 @@ class IterativeDeepeningPlayer(Player.Player):
 
             state.undo_last_move()
 
-            if value > beta:
-                return (value, None)
+            if value >= beta:
+                return (value, move)
             if value > alpha:
                 alpha = value
 
@@ -132,6 +132,7 @@ class IterativeDeepeningPlayer(Player.Player):
                 best_value = value
                 best_move = move
             elif value == best_value:
+                # prob destribution wrong
                 if random.choice((True,False)):
                     best_value = value
                     best_move = move
