@@ -5,6 +5,7 @@ from Player import HumanPlayer, SkirmishPlayer, RandomPlayer
 from GreedyPlayer import GreedyPlayer
 from NegamaxPlayer import NegamaxPlayer
 from NegamaxPruningPlayer import NegamaxPruningPlayer
+from IterativeDeepeningPlayer import IterativeDeepeningPlayer
 from Board import Board
 from FancyDisplay import FancyDisplay
 from Move import Move
@@ -12,7 +13,7 @@ import sys
 import argparse
 
 parser = argparse.ArgumentParser(description='Play a game of chess!')
-parser.add_argument('playertypes', nargs=2, choices=['h', 'r', 'g', 'n', 'np', 'skirmish'], help='playertype of white and black')
+parser.add_argument('playertypes', nargs=2, choices=['h', 'r', 'g', 'n', 'np', 'id', 'skirmish'], help='playertype of white and black')
 args = parser.parse_args()
 
 # create players
@@ -30,6 +31,8 @@ for i, color in enumerate(('white', 'black')):
         players[color] = SkirmishPlayer()
     elif args.playertypes[i] == 'np':
         players[color] = NegamaxPruningPlayer()
+    elif args.playertypes[i] == 'id':
+        players[color] = IterativeDeepeningPlayer()
 
 
 
