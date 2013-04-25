@@ -76,7 +76,6 @@ class IterativeDeepeningPlayer(Player.Player):
             shallow_value = deeper_value
             depth += 1
 
-        print("D:", depth, "-", "Value for", shallow_move, "=", shallow_value)
         return shallow_move
 
     def negamax(self, state, max_depth, alpha, beta):
