@@ -33,6 +33,7 @@ class Board(object):
         self.board = []
         self.move_num = 1
         self.turn = "W"
+        self.history = []
 
         if str_rep == None:
             # load default board
@@ -48,7 +49,7 @@ class Board(object):
 
         self._load_board(str_rep)
 
-        self.cur_score = self.calc_score()
+        self.cur_score = self._calc_score()
 
     def _load_board(self, str_rep):
         """
@@ -189,21 +190,22 @@ class Board(object):
         assert isinstance(move, Move)
 
         old_piece_end = self.at(move.end)
-        new_piece_end = self.at(move.start)
+        new_piece_end = piece_start = self.at(move.start)
+        new_score = self.cur_score
 
         # pawn promotion
         if new_piece_end == 'p' and move.end[1] == 1:
             assert self.turn == 'B'
             new_piece_end = 'q'
-            self.cur_score -= Board.piece_values['p']
-            self.cur_score += Board.piece_values['q']
+            new_score -= Board.piece_values['p']
+            new_score += Board.piece_values['q']
         elif new_piece_end == 'P' and move.end[1] == 6:
             assert self.turn == 'W'
             new_piece_end = 'Q'
-            self.cur_score -= Board.piece_values['P']
-            self.cur_score += Board.piece_values['Q']
+            new_score -= Board.piece_values['P']
+            new_score += Board.piece_values['Q']
 
-        self.cur_score -= Board.piece_values[old_piece_end]
+        new_score -= Board.piece_values[old_piece_end]
         self.set(move.end, new_piece_end)
         self.set(move.start, '.')
 
@@ -216,17 +218,41 @@ class Board(object):
         # king capture and result
         if old_piece_end == 'k':
             result = 'W'
-            self.cur_score = 100000
+            new_score = 100000
         elif old_piece_end == 'K':
             result = 'B'
-            self.cur_score = -100000
+            new_score = -100000
         elif self.move_num == 41:
             result = '='
-            self.cur_score = 0
+            new_score = 0
         else:
             result = '?'
+
+        # save old state to be able to undo it later
+        # ((startpos, startpiece), (endpos, endpiece), score)
+        self.history.append(((move.start, piece_start), (move.end, old_piece_end), self.cur_score))
+
+        self.cur_score = new_score
         return result
    
+    def undo_last_move(self):
+        """Undos the last move in the history. Returns nothing."""
+
+        # change turn and move_num
+        if self.turn == "W":
+            self.move_num -= 1
+            self.turn = "B"
+        else:
+            self.turn = "W"
+
+        assert self.history
+        last_move = self.history.pop()
+        # ((startpos, startpiece), (endpos, endpiece), score)
+        self.set(last_move[0][0], last_move[0][1])
+        self.set(last_move[1][0], last_move[1][1])
+        self.cur_score = last_move[2]
+
+
     def score_after(self, move):
         """
         The caller guarantees that the move is legal.
@@ -273,8 +299,8 @@ class Board(object):
 
         return score if turn == "W" else -score
 
-    def calc_score(self):
-        """Calculates the score from the view of whites turn"""
+    def _calc_score(self):
+        """Calculates the score of the whole board from the view of whites turn"""
         score = 0
         black_king_found = False
         white_king_found = False
@@ -289,6 +315,8 @@ class Board(object):
             score = 100000
         if not white_king_found:
             score = -100000
+        if move_num == 41:
+            score = 0
 
         return score
 
@@ -308,9 +336,11 @@ class Board(object):
         return new_board
 
     def __eq__(self, other):
+        # we don't check the history
         return (self.move_num == other.move_num and
                 self.turn == other.turn and
-                self.board == other.board)
+                self.board == other.board and
+                self.cur_score == other.cur_score)
 
     def __str__(self):
         result = []
