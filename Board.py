@@ -14,13 +14,13 @@ class Board(object):
     pieces = "kqbnrpKQBNRP."
     piece_values = {
         'k': -100000,
-        'q': -900,
+        'q': -700,
         'b': -300,
         'n': -250,
         'r': -500,
         'p': -125,
         'K': 100000,
-        'Q': 900,
+        'Q': 700,
         'B': 300,
         'N': 250,
         'R': 500,
@@ -201,7 +201,7 @@ class Board(object):
         if p == 'p':
             # pawn
             bonus = distance * 10
-        elif p != 'k':
+        else:
             # everything except king
             if distance > 0:
                 bonus = 10
