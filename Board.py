@@ -25,8 +25,7 @@ class Board(object):
         'N': 250,
         'R': 500,
         'P': 125,
-        '.': 0,
-        '#': 0
+        '.': 0
     }
 
     def __init__(self, str_rep = None):
@@ -182,6 +181,35 @@ class Board(object):
 
         return legal_moves
 
+    def _bonus_score(self, pos, piece):
+        """calculates a bonus score for the piece on pos"""
+        # from whites pov
+        # white pieces get positive bonus
+        # black ones negative
+
+        if piece == '.': return 0
+
+        whites_piece = piece.isupper()
+        if whites_piece:
+            # how far is this piece from its baseline?
+            distance = pos[1] - 1
+        else:
+            distance = 6 - pos[1]
+
+        bonus = 0
+        p = piece.lower()
+        if p == 'p':
+            # pawn
+            bonus = distance * 10
+        elif p != 'k':
+            # everything except king
+            if distance > 0:
+                bonus = 10
+
+        if whites_piece: return bonus
+        else: return -bonus
+
+
     def move(self, move):
         """
         The caller guarantees that the move is legal.
@@ -208,6 +236,15 @@ class Board(object):
         new_score -= Board.piece_values[old_piece_end]
         self.set(move.end, new_piece_end)
         self.set(move.start, '.')
+
+        # remove bonus score of start piece
+        new_score -= self._bonus_score(move.start, piece_start)
+
+        # remove bonus score of captured piece
+        new_score -= self._bonus_score(move.end, old_piece_end)
+
+        # add bonus score of end piece
+        new_score += self._bonus_score(move.end, new_piece_end)
 
         if self.turn == "W":
             self.turn = "B"
@@ -270,7 +307,7 @@ class Board(object):
         move_num = self.move_num
 
         old_piece_end = self.at(move.end)
-        new_piece_end = self.at(move.start)
+        new_piece_end = piece_start = self.at(move.start)
 
         # pawn promotion
         if new_piece_end == 'p' and move.end[1] == 1:
@@ -285,6 +322,16 @@ class Board(object):
             score += Board.piece_values['Q']
 
         score -= Board.piece_values[old_piece_end]
+
+        # remove bonus score of start piece
+        score -= self._bonus_score(move.start, piece_start)
+
+        # remove bonus score of captured piece
+        score -= self._bonus_score(move.end, old_piece_end)
+
+        # add bonus score of end piece
+        score += self._bonus_score(move.end, new_piece_end)
+
 
         if turn == "W":
             turn = "B"
@@ -307,12 +354,14 @@ class Board(object):
         score = 0
         black_king_found = False
         white_king_found = False
-        for piece in self.fields():
+        for pos in self.positions():
+            piece = self.at(pos)
             if piece == 'k':
                 black_king_found = True
             elif piece == 'K':
                 white_king_found = True
             score += Board.piece_values[piece]
+            score += self._bonus_score(pos, piece)
 
         if not black_king_found:
             score = 100000
