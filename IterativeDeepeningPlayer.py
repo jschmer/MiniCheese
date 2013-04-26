@@ -16,7 +16,7 @@ class TimeUpError(Exception):
 
 class IterativeDeepeningPlayer(Player.Player):
     def __init__(self):
-        self.match_duration = 300
+        self.match_duration = 295
         self.time_spent = 0
 
     def generate_move(self, game):
@@ -59,8 +59,8 @@ class IterativeDeepeningPlayer(Player.Player):
                 # time expired
                 # returns the shallow move
                 break
-
-            print("D:", depth, "-", "Value for", deeper_move, "=", deeper_value)
+            if not depth > 20:
+                print("D:", depth, "-", "Value for", deeper_move, "=", deeper_value)
 
             # handle game end conditions
             if deeper_value >= 100000:
@@ -111,9 +111,6 @@ class IterativeDeepeningPlayer(Player.Player):
         sorted_moves = sorted(sorted_moves, key=lambda t: t[0])
 
         best_value = -sys.maxsize
-
-        # number of equal valued moves
-        num_equal_best = 0
     
         for value, move in sorted_moves:
             result = state.move(move)
@@ -135,9 +132,5 @@ class IterativeDeepeningPlayer(Player.Player):
                 best_value = value
                 best_move = move
             elif value == best_value:
-                # choose one move at random
-                num_equal_best += 1
-                if random.random() > (1 / (num_equal_best)):
-                    best_value = value
-                    best_move = move
+                pass
         return (best_value, best_move)
