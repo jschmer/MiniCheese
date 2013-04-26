@@ -40,7 +40,12 @@ class SkirmishPlayer(Player):
     def generate_move(self, game):
         print("getting move from skirmish:")
         move = sys.stdin.readline()
-        _, move = move.strip().split(" ")
+        try:
+            _, move = move.strip().split(" ")
+        except:
+            f = open("crap", "w")
+            f.write(move)
+            f.close()
         return Move.from_string(move)
 
     def process_opponent_move(self, move):
