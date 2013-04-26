@@ -9,6 +9,7 @@ import subprocess
 parser = argparse.ArgumentParser(description='Play a game of chess online!')
 parser.add_argument('-o', '--offer', action="store_true")
 parser.add_argument('-a', '--accept', metavar='id')
+parser.add_argument('-exe', action="store_true")
 parser.add_argument('color', choices=['w', 'b'])
 parser.add_argument('our_player', help='command line arguments to our player')
 args = parser.parse_args()
@@ -36,7 +37,11 @@ OFFER = "/offer"
 commandline = ["python2", "skirmish/skirmish.py", "-v"]
 
 # commandline for our player
-our_player_cmd = ["run", "python3", "Game.py"]
+if args.exe:
+    our_player_cmd = ["run", "./Game.exe"]
+else:
+    our_player_cmd = ["run", "python3", "Game.py"]
+    
 if args.color == 'w':
     our_player_cmd += [args.our_player, 'skirmish']
 else:
@@ -61,4 +66,5 @@ else:
     commandline.append(imcs_player_cmd)
     commandline.append(our_player_cmd)
 
+print(commandline)
 subprocess.call(commandline)
