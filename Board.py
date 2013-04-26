@@ -65,29 +65,32 @@ class Board(object):
         if self.turn not in Board.colors:
             raise ValueError("Invalid turn")
 
-        for line in lines[1:]:
+        self.white_pieces = {}
+        self.black_pieces = {}
+
+        for y, line in enumerate(lines[1:]):
             line = line.strip()
             if len(line) != 5:
                 raise ValueError("Invalid line size")
 
-            for char in line:
+            for x, char in enumerate(line):
                 if char not in self.pieces:
                     raise ValueError("Invalid piece")
+
+                if char.isupper():
+                    self.white_pieces[(x+1, 6-(y))] = char
+                elif char.islower():
+                    self.black_pieces[(x+1, 6-(y))] = char
 
             self.board.append(list(line))
 
         self.board.reverse()
 
     def is_own_piece(self, c):
-        if not c in Board.pieces:
-            assert False
-
         if c.isupper():
             return self.turn == "W"
         elif c.islower():
             return self.turn == "B"
-        else:
-            assert False
 
     def is_within_bounds(self, pos):
         """
@@ -132,7 +135,7 @@ class Board(object):
         """
         only_capture implies only one step
         """
-        assert isinstance(pos, tuple)
+        #assert isinstance(pos, tuple)
         newpos = pos
 
         while True:
@@ -170,14 +173,27 @@ class Board(object):
         computes a list of legal moves for the current player and returns it
         '''
         legal_moves = []
-        for row in range(1, 7):
-            for col in range(1, 6):
-                position = (col, row)
-                field = self.at(position)
-                if not field in ['#', '.'] and self.is_own_piece(field):
-                    possible_piece_moves = moves_for[field]
-                    for move in possible_piece_moves:
-                        self.scan(legal_moves, position, *move)
+        #for row in range(1, 7):
+        #    for col in range(1, 6):
+        #        position = (col, row)
+        #        field = self.at(position)
+        #        if not field in ['#', '.'] and self.is_own_piece(field):
+        #            possible_piece_moves = moves_for[field]
+        #            for move in possible_piece_moves:
+        #                self.scan(legal_moves, position, *move)
+
+        #return legal_moves
+        if self.turn == 'W':
+            # generate white moves
+            dict = self.white_pieces
+        else:
+            # generate black moves
+            dict = self.black_pieces
+
+        for pos, piece in dict.items():
+            possible_piece_moves = moves_for[piece]
+            for move in possible_piece_moves:
+                self.scan(legal_moves, pos, *move)
 
         return legal_moves
 
@@ -215,7 +231,7 @@ class Board(object):
         The caller guarantees that the move is legal.
         The score is calculated 'on the move'
         """
-        assert isinstance(move, Move)
+        #assert isinstance(move, Move)
 
         old_piece_end = self.at(move.end)
         new_piece_end = piece_start = self.at(move.start)
@@ -223,12 +239,12 @@ class Board(object):
 
         # pawn promotion
         if new_piece_end == 'p' and move.end[1] == 1:
-            assert self.turn == 'B'
+            #assert self.turn == 'B'
             new_piece_end = 'q'
             new_score -= Board.piece_values['p']
             new_score += Board.piece_values['q']
         elif new_piece_end == 'P' and move.end[1] == 6:
-            assert self.turn == 'W'
+            #assert self.turn == 'W'
             new_piece_end = 'Q'
             new_score -= Board.piece_values['P']
             new_score += Board.piece_values['Q']
@@ -245,6 +261,22 @@ class Board(object):
 
         # add bonus score of end piece
         new_score += self._bonus_score(move.end, new_piece_end)
+
+        # tracking pieces
+        if piece_start.islower():
+            # blacks piece moving
+            self.black_pieces.pop(move.start)
+            self.black_pieces[move.end] = new_piece_end
+
+            if move.end in self.white_pieces:
+                self.white_pieces.pop(move.end)
+        else:
+            # whites piece moving
+            self.white_pieces.pop(move.start)
+            self.white_pieces[move.end] = new_piece_end
+
+            if move.end in self.black_pieces:
+                self.black_pieces.pop(move.end)
 
         if self.turn == "W":
             self.turn = "B"
@@ -285,12 +317,41 @@ class Board(object):
         else:
             self.turn = "W"
 
-        assert self.history
+        # history stuff
+        #assert self.history
         last_move = self.history.pop()
         # ((startpos, startpiece), (endpos, endpiece), score)
-        self.set(last_move[0][0], last_move[0][1])
-        self.set(last_move[1][0], last_move[1][1])
+        startmove = last_move[0]
+        endmove = last_move[1]
+
+        # keep track of pieces
+
+        # remove current piece at endmove
+        piece = self.at(endmove[0])
+        if piece.isupper():
+            self.white_pieces.pop(endmove[0])
+        elif piece.islower():
+            self.black_pieces.pop(endmove[0])
+
+        # insert piece at endmove
+        m = endmove
+        if m[1].isupper():
+            self.white_pieces[m[0]] = m[1]
+        elif m[1].islower():
+            self.black_pieces[m[0]] = m[1]
+
+        # insert piece at startmove
+        m = startmove
+        if m[1].isupper():
+            self.white_pieces[m[0]] = m[1]
+        elif m[1].islower():
+            self.black_pieces[m[0]] = m[1]
+
+        self.set(startmove[0], startmove[1])
+        self.set(endmove[0], endmove[1])
         self.cur_score = last_move[2]
+
+        pass
 
 
     def score_after(self, move):
@@ -300,7 +361,7 @@ class Board(object):
         without actually altering the board.
         It's blazingly fast! :D
         """
-        assert isinstance(move, Move)
+        #assert isinstance(move, Move)
 
         score = self.cur_score
         turn = self.turn
@@ -311,12 +372,12 @@ class Board(object):
 
         # pawn promotion
         if new_piece_end == 'p' and move.end[1] == 1:
-            assert self.turn == 'B'
+            #assert self.turn == 'B'
             new_piece_end = 'q'
             score -= Board.piece_values['p']
             score += Board.piece_values['q']
         elif new_piece_end == 'P' and move.end[1] == 6:
-            assert self.turn == 'W'
+            #assert self.turn == 'W'
             new_piece_end = 'Q'
             score -= Board.piece_values['P']
             score += Board.piece_values['Q']
@@ -384,6 +445,8 @@ class Board(object):
         new_board.turn = other_board.turn
         new_board.move_num = other_board.move_num
         new_board.cur_score = other_board.cur_score
+        new_board.white_pieces = dict(other_board.white_pieces)
+        new_board.black_pieces = dict(other_board.black_pieces)
         # history contents are immutable
         new_board.history = other_board.history[:]
         new_board.board = [line[:] for line in other_board.board]
