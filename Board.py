@@ -102,13 +102,13 @@ class Board(object):
         return True
 
     def positions(self):
-        for x in range(1, 6):
-            for y in range(1, 7):
+        for y in range(1, 7):
+            for x in range(1, 6):
                 yield (x, y)
 
     def fields(self):
-        for x in range(1, 6):
-            for y in range(1, 7):
+        for y in range(1, 7):
+            for x in range(1, 6):
                 yield self.board[y-1][x-1] 
 
     def at(self, pos):

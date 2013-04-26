@@ -7,6 +7,21 @@ from Move import Move
 
 class BoardTest(unittest.TestCase):
 
+    def test_fields(self):
+        b = Board("""
+            11 W
+            p.bn.
+            .....
+            .....
+            .....
+            .....
+            ...QK
+            """)
+        fields = [p for p in b.fields()]
+        fields = "".join(fields)
+        expected = "...QK....................p.bn."
+        self.assertEqual(expected, fields)
+
     def test_construct_default(self): 
         b = Board()
 
