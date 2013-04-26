@@ -200,7 +200,7 @@ class Board(object):
         p = piece.lower()
         if p == 'p':
             # pawn
-            bonus = distance * 10
+            bonus = distance * 20
         else:
             # everything except king
             if distance > 0:
