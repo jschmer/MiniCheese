@@ -35,5 +35,8 @@
     <ClInclude Include="include\MiniCheese\String.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\MiniCheese\ScanArguments.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

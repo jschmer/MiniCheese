@@ -5,7 +5,11 @@ using std::endl;
 #include <MiniCheese/Move.h>
 #include <MiniCheese/Exceptions.h>
 
+#include <MiniCheese/ScanArguments.h>
+
 int main() {
+    scan_arguments;
+
     Move m(Pos2D(1, 1), Pos2D(2, 2));
     Move m2(Pos2D(1, 1), Pos2D(2, 2));
 
