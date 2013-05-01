@@ -1,7 +1,7 @@
-#include <MiniCheese/Move.h>
+#include "MiniCheese/Move.h"
 
-#include <MiniCheese/Exceptions.h>
-#include <MiniCheese/String.h>
+#include "MiniCheese/Exceptions.h"
+#include "MiniCheese/StringHelper.h"
 
 using std::string;
 
@@ -15,6 +15,8 @@ std::string posToString(Pos2D pos) {
 }
 
 Pos2D parsePosition(std::string str) {
+    using String::existIn;
+
     if (str.length() > 2) throw ValueError("Too much position information");
     if (!existIn(str[0], Move::cols)) throw ValueError("Wrong column index");
     if (!existIn(str[1], Move::rows)) throw ValueError("Wrong row index");
@@ -35,7 +37,7 @@ Move parseMove(std::string str) {
 //
 // class Move
 const string Move::cols = "abcde",
-                Move::rows = "123456";
+             Move::rows = "123456";
 
 Move::Move(Pos2D start, Pos2D end)
     : start(start), end(end)

@@ -2,24 +2,22 @@
 using std::cout;
 using std::endl;
 
-#include <MiniCheese/Move.h>
-#include <MiniCheese/Exceptions.h>
-
-#include <MiniCheese/ScanArguments.h>
+#include "MiniCheese/Board.h"
 
 int main() {
-    scan_arguments;
+    auto str_rep = \
+    "1 W\n"
+    "kqbnr\n"
+    "ppppp\n"
+    ".....\n"
+    "..P..\n"
+    "PP.PP\n"
+    "RNBQK\n";
 
-    Move m(Pos2D(1, 1), Pos2D(2, 2));
-    Move m2(Pos2D(1, 1), Pos2D(2, 2));
+    Board b(str_rep);
 
-    try {
-        cout << m.toString() << endl;
-        cout << parseMove("a1-e6").toString() << endl;
-        cout << ((m == m2) ? "true" : "false") << endl;
-    } catch (ValueError &e) {
-        cout << e.what() << endl;
-    }
+    cout << b.toString() << endl;
+    cout << "score: " + std::to_string(b.score()) << endl;
 
     getchar();
     return 0;
