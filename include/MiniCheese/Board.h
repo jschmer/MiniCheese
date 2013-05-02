@@ -4,6 +4,7 @@
 #include <map>
 #include <vector>
 #include <tuple>
+#include <stack>
 
 #include "MiniCheese/Move.h"
 
@@ -23,13 +24,15 @@ public:
     std::string toString() const;
     int score() const;
 
+    std::vector<Move> legal_moves() const;
+    char move(Move move);
+    void undo_last_move();
+
 private:
     void _load_board(std::string str_rep);
     void set(Pos2D pos, char piece);
     char at(Pos2D pos) const;
 
-    char move(Move move);
-    void undo_last_move();
 
     bool is_own_piece(char piece) const;
     bool is_within_bounds(Pos2D pos) const;
@@ -38,20 +41,21 @@ private:
     int _bonus_score(Pos2D pos, char piece) const;
     int _calc_score() const;
     
-
     // scanner
     void scan(std::vector<Move>& move_list,
-              Pos2D pos, short dx, short dy,
+              const Pos2D pos, short dx, short dy,
               bool only_capture = false,
               bool no_capture = false,
               bool one_step = false) const;
-    std::vector<Move> legal_moves() const;
 
 private:
     int  move_num;
     char turn;
     int  cur_score;
     std::vector<std::string> board;
-    std::tuple<std::pair<Pos2D, char>, std::pair<Pos2D, char>, int> history;
+
+    typedef std::tuple<std::pair<Pos2D, char>, std::pair<Pos2D, char>, int> HistoryEntry;
+    // make_tuple(make_pair(Pos2D, char), make_pair(Pos2D, char), int)
+    std::stack<HistoryEntry> history;
 };
 

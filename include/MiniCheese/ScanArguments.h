@@ -95,7 +95,7 @@ scan_args _P[] = {
 std::vector<scan_args> P(&_P[0], &_P[3]);
 
 // initialize map
-ScanArgsMap scan_arguments = [&](){
+ScanArgsMap scan_arguments_for = [&](){
     ScanArgsMap tmp;
     tmp['k'] = k;
     tmp['q'] = q;

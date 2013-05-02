@@ -9,6 +9,10 @@
 using std::string;
 using std::vector;
 
+using std::make_tuple;
+using std::make_pair;
+using std::get;
+
 //
 // Board statics
 const string Board::colors = "BW",
@@ -39,8 +43,8 @@ const std::map<char, int> Board::piece_values = [](){
 
 const std::vector<Pos2D> Board::positions = []() {
     std::vector<Pos2D> tmp;
-    for (int x = 1; x < 7; ++x)
-        for (int y = 1; y < 6; ++y)
+    for (int x = 1; x < 6; ++x)
+        for (int y = 1; y < 7; ++y)
             tmp.push_back(Pos2D(x, y));
     return tmp;
 }();
@@ -130,7 +134,7 @@ void Board::set(Pos2D pos, char piece) {
     //if piece in Board.pieces:
     //    self.board[pos[1]-1][pos[0]-1] = piece
     if (String::existIn(piece, Board::pieces))
-        board[x-1][y-1] = piece;
+        board[y-1][x-1] = piece;
 }
 
 char Board::at(Pos2D pos) const {
@@ -139,16 +143,147 @@ char Board::at(Pos2D pos) const {
     auto& x = pos.first;
     auto& y = pos.second;
     
-    return board[x-1][y-1] ;
+    // y is row index!
+    return board[y-1][x-1] ;
 }
 
 char Board::move(Move move) {
-    assert(false);
-    return 'c';
+    //old_piece_end = self.at(move.end)
+    //new_piece_end = piece_start = self.at(move.start)
+    //new_score = self.cur_score
+
+    auto old_piece_end = at(move.end);
+    auto new_piece_end = at(move.start);
+    auto piece_start = new_piece_end;
+    auto new_score = cur_score;
+
+    //# pawn promotion
+    //if new_piece_end == 'p' and move.end[1] == 1:
+    if (new_piece_end == 'p' && move.end.second == 1) {
+    //    assert self.turn == 'B'
+        assert(turn == 'B');
+
+    //    new_piece_end = 'q'
+    //    new_score -= Board.piece_values['p']
+    //    new_score += Board.piece_values['q']
+        new_piece_end = 'q';
+        new_score -= Board::piece_values.at('p');
+        new_score += Board::piece_values.at('q');
+    }
+    //elif new_piece_end == 'P' and move.end[1] == 6:
+    else if (new_piece_end == 'P' && move.end.second == 6) {
+    //    assert self.turn == 'W'
+        assert(turn == 'W');
+    //    new_piece_end = 'Q'
+    //    new_score -= Board.piece_values['P']
+    //    new_score += Board.piece_values['Q']
+        new_piece_end = 'Q';
+        new_score -= Board::piece_values.at('P');
+        new_score += Board::piece_values.at('Q');
+    }
+
+    //new_score -= Board.piece_values[old_piece_end]
+    new_score -= Board::piece_values.at(old_piece_end);
+    //self.set(move.end, new_piece_end)
+    //self.set(move.start, '.')
+    set(move.end, new_piece_end);
+    set(move.start, '.');
+
+    //# remove bonus score of start piece
+    //new_score -= self._bonus_score(move.start, piece_start)
+    new_score -= _bonus_score(move.start, piece_start);
+
+    //# remove bonus score of captured piece
+    //new_score -= self._bonus_score(move.end, old_piece_end)
+    new_score -= _bonus_score(move.end, old_piece_end);
+
+    //# add bonus score of end piece
+    //new_score += self._bonus_score(move.end, new_piece_end)
+    new_score += _bonus_score(move.end, new_piece_end);
+
+    //if self.turn == "W":
+    //    self.turn = "B"
+    if (turn == 'W') {
+        turn = 'B';
+    }
+    //else:
+    else {
+    //    self.move_num += 1
+    //    self.turn = "W"
+        ++move_num;
+        turn = 'W';
+    }
+
+    char result = '?';
+
+    //# king capture and result
+    //if old_piece_end == 'k':
+    if (old_piece_end == 'k') {
+    //    result = 'W'
+    //    new_score = 100000
+        result = 'W';
+        new_score = 100000;
+    }
+    //elif old_piece_end == 'K':
+    else if (old_piece_end == 'K') {
+    //    result = 'B'
+    //    new_score = -100000
+        result = 'B';
+        new_score = -100000;
+    }
+    //elif self.move_num == 41:
+    else if (move_num == 41) {
+    //    result = '='
+    //    new_score = 0
+        result = '=';
+        new_score = 0;
+    }
+
+    //# save old state to be able to undo it later
+    //# ((startpos, startpiece), (endpos, endpiece), score)
+    //# if self._calc_score() != new_score:
+    //#     print("calc_score:", self._calc_score(), "new_score:")
+    //#     print("Wtf")
+    //self.history.append(((move.start, piece_start), (move.end, old_piece_end), self.cur_score))
+    history.emplace(make_tuple(make_pair(move.start, piece_start), make_pair(move.end, old_piece_end), cur_score));
+
+    //self.cur_score = new_score
+    cur_score = new_score;
+    //return result
+    return result;
 }
 
 void Board::undo_last_move() {
-    assert(false);
+    //# change turn and move_num
+    //if self.turn == "W":
+    if (turn == 'W') {
+    //    self.move_num -= 1
+    //    self.turn = "B"
+        move_num -= 1;
+        turn = 'B';
+    }
+    //else:
+    else {
+    //    self.turn = "W"
+        turn = 'W';
+    }
+
+    //assert self.history
+    //last_move = self.history.pop()
+    auto last_move = history.top();
+    history.pop();
+
+    auto& start = get<0>(last_move);
+    auto& end   = get<1>(last_move);
+    auto& score = get<2>(last_move);
+
+    //# ((startpos, startpiece), (endpos, endpiece), score)
+    //self.set(last_move[0][0], last_move[0][1])
+    set(start.first, start.second);
+    //self.set(last_move[1][0], last_move[1][1])
+    set(end.first, end.second);
+    //self.cur_score = last_move[2]
+    cur_score = score;
 }
 
 bool Board::is_own_piece(char piece) const {
@@ -171,16 +306,16 @@ bool Board::is_own_piece(char piece) const {
 }
 
 bool Board::is_within_bounds(Pos2D pos) const {
-    auto& x = pos.first;
-    auto& y = pos.second;
+    auto& col = pos.first;
+    auto& row = pos.second;
 
     // if pos[0] < 1 or pos[0] > 5:
     //   return False
-    if (x < 1 || x > 5)
+    if (col < 1 || col > 5)
         return false;
     // if pos[1] < 1 or pos[1] > 6:
     //   return False
-    if (y < 1 || y > 6)
+    if (row < 1 || row > 6)
         return false;
 
     // return True
@@ -190,8 +325,8 @@ bool Board::is_within_bounds(Pos2D pos) const {
 // void fields() const {}
 
 int Board::_bonus_score(Pos2D pos, char piece) const {
-    auto& y = pos.first;  // row index
-    auto& x = pos.second; // column index
+    auto& x = pos.first;  // col index
+    auto& y = pos.second; // row index
 
     //if piece == '.': return 0
     if (piece == '.')
@@ -241,6 +376,7 @@ int Board::_bonus_score(Pos2D pos, char piece) const {
 int Board::_calc_score() const {
     //score = 0
     int score = 0;
+
     //black_king_found = False
     //white_king_found = False
     bool black_king_found = false, white_king_found = false;
@@ -286,22 +422,103 @@ int Board::score() const {
     return turn == 'W' ? cur_score : -cur_score;
 }
 
-
 // scanner
 void Board::scan(std::vector<Move>& move_list,
-            Pos2D pos, short dx, short dy,
+            const Pos2D pos, short dx, short dy,
             bool only_capture,
             bool no_capture,
             bool one_step) const
 {
-    assert(false);
+    //assert isinstance(pos, tuple)
+    //newpos = pos
+    auto newpos = pos;
+
+    //while True:
+    while (true) {
+    //    newpos = (newpos[0] + dx, newpos[1] + dy)
+        newpos.first  += dx;
+        newpos.second += dy;
+    //    if not self.is_within_bounds(newpos):
+    //        break
+
+        if (!is_within_bounds(newpos))
+            break;
+
+    //    piece = self.at(newpos)
+        auto piece = at(newpos);
+
+    //    if only_capture:
+        if (only_capture) {
+    //        # pawn bastard
+    //        if piece == '.': break
+            if (piece == '.') break;
+    //        elif self.is_own_piece(piece): break
+            else if (is_own_piece(piece)) break;
+    //        else: 
+    //            move_list.append(Move(pos, newpos))
+    //            break
+            else {
+                move_list.push_back(Move(pos, newpos));
+                break;
+            }
+        }
+    //    else:
+        else {
+    //        # everything else
+    //        if piece == '.':
+    //            # legal move
+    //            move_list.append(Move(pos, newpos))
+            if (piece == '.')
+                move_list.push_back(Move(pos, newpos));
+    //        elif self.is_own_piece(piece):
+    //            # collision with own piece
+    //            break
+            else if (is_own_piece(piece))
+                break;
+    //        else:
+            else {
+    //            if no_capture == False:
+    //                # capture enemy piece
+    //                move_list.append(Move(pos, newpos))
+                if (no_capture == false)
+                    move_list.push_back(Move(pos, newpos));
+    //            break
+                break;
+            }
+        }
+
+    //    if one_step:
+    //        break
+        if (one_step)
+            break;
+    }
 }
 
 std::vector<Move> Board::legal_moves() const {
-    assert(false);
-    return std::vector<Move>();
-}
+    //legal_moves = []
+    std::vector<Move> legal_moves;
 
+    for (auto& pos : Board::positions) {
+    //for row in range(1, 7):
+    //    for col in range(1, 6):
+    //        position = (col, row)
+    //        field = self.at(position)
+        auto piece = at(pos);
+    //        if not field in ['#', '.'] and self.is_own_piece(field):
+        if (!String::existIn(piece, "#.") && is_own_piece(piece)) {
+    //            possible_piece_moves = moves_for[field]
+            auto& possible_piece_moves = scan_arguments_for[piece];
+    //            for move in possible_piece_moves:
+            for (auto& sa : possible_piece_moves) {
+    //                self.scan(legal_moves, position, *move)
+                scan(legal_moves, pos, get<0>(sa), get<1>(sa), get<2>(sa), get<3>(sa), get<4>(sa));
+            }
+        }
+    }
+
+    //return legal_moves
+    return legal_moves;
+}
     
 std::string Board::toString() const {
     //result = []
