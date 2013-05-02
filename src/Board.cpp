@@ -125,7 +125,7 @@ void Board::_load_board(std::string str_rep) {
     std::reverse(board.begin(),board.end()); 
 }
 
-void Board::set(Pos2D pos, char piece) {
+void Board::set(const Pos2D& pos, char piece) {
     assert(is_within_bounds(pos));
 
     auto& x = pos.first;
@@ -137,7 +137,7 @@ void Board::set(Pos2D pos, char piece) {
         board[y-1][x-1] = piece;
 }
 
-char Board::at(Pos2D pos) const {
+char Board::at(const Pos2D& pos) const {
     assert(is_within_bounds(pos));
     
     auto& x = pos.first;
@@ -147,7 +147,7 @@ char Board::at(Pos2D pos) const {
     return board[y-1][x-1] ;
 }
 
-char Board::move(Move move) {
+char Board::move(const Move& move) {
     //old_piece_end = self.at(move.end)
     //new_piece_end = piece_start = self.at(move.start)
     //new_score = self.cur_score
@@ -253,6 +253,94 @@ char Board::move(Move move) {
     return result;
 }
 
+int Board::score_after(Move move) const {
+    //score = self.cur_score
+    //turn = self.turn
+    //move_num = self.move_num
+
+    auto t_score = cur_score;
+    auto t_turn = turn;
+    auto t_move_num = move_num;
+
+    //old_piece_end = self.at(move.end)
+    //new_piece_end = piece_start = self.at(move.start)
+    auto old_piece_end = at(move.end);
+    auto new_piece_end = at(move.start);
+    auto piece_start = new_piece_end;
+
+    //# pawn promotion
+    //if new_piece_end == 'p' and move.end[1] == 1:
+    if (new_piece_end == 'p' && move.end.second == 1) {
+    //    assert self.turn == 'B'
+        assert(turn == 'B');
+
+    //    new_piece_end = 'q'
+    //    new_score -= Board.piece_values['p']
+    //    new_score += Board.piece_values['q']
+        new_piece_end = 'q';
+        t_score -= Board::piece_values.at('p');
+        t_score += Board::piece_values.at('q');
+    }
+    //elif new_piece_end == 'P' and move.end[1] == 6:
+    else if (new_piece_end == 'P' && move.end.second == 6) {
+    //    assert self.turn == 'W'
+        assert(turn == 'W');
+    //    new_piece_end = 'Q'
+    //    new_score -= Board.piece_values['P']
+    //    new_score += Board.piece_values['Q']
+        new_piece_end = 'Q';
+        t_score -= Board::piece_values.at('P');
+        t_score += Board::piece_values.at('Q');
+    }
+
+    //new_score -= Board.piece_values[old_piece_end]
+    t_score -= Board::piece_values.at(old_piece_end);
+
+    //# remove bonus score of start piece
+    //new_score -= self._bonus_score(move.start, piece_start)
+    t_score -= _bonus_score(move.start, piece_start);
+
+    //# remove bonus score of captured piece
+    //new_score -= self._bonus_score(move.end, old_piece_end)
+    t_score -= _bonus_score(move.end, old_piece_end);
+
+    //# add bonus score of end piece
+    //new_score += self._bonus_score(move.end, new_piece_end)
+    t_score += _bonus_score(move.end, new_piece_end);
+
+    //if turn == "W":
+    if (t_turn == 'W')
+    //    turn = "B"
+        t_turn = 'B';
+    //else:
+    else {
+    //    move_num += 1
+    //    turn = "W"
+        ++t_move_num;
+        t_turn = 'W';
+    }
+
+    //# king capture and result
+    //if old_piece_end == 'k':
+    if (old_piece_end == 'k') {
+    //    new_score = 100000
+        t_score = 100000;
+    }
+    //elif old_piece_end == 'K':
+    else if (old_piece_end == 'K') {
+    //    new_score = -100000
+        t_score = -100000;
+    }
+    //elif self.move_num == 41:
+    else if (move_num == 41) {
+    //    new_score = 0
+        t_score = 0;
+    }
+
+    //return score if turn == "W" else -score
+    return t_turn == 'W' ? t_score : -t_score;
+}
+
 void Board::undo_last_move() {
     //# change turn and move_num
     //if self.turn == "W":
@@ -305,7 +393,7 @@ bool Board::is_own_piece(char piece) const {
     return false;
 }
 
-bool Board::is_within_bounds(Pos2D pos) const {
+bool Board::is_within_bounds(const Pos2D& pos) const {
     auto& col = pos.first;
     auto& row = pos.second;
 
@@ -324,7 +412,7 @@ bool Board::is_within_bounds(Pos2D pos) const {
 
 // void fields() const {}
 
-int Board::_bonus_score(Pos2D pos, char piece) const {
+int Board::_bonus_score(const Pos2D& pos, char piece) const {
     auto& x = pos.first;  // col index
     auto& y = pos.second; // row index
 

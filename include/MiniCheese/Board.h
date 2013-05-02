@@ -21,24 +21,28 @@ public:
     Board(std::string str_rep = "");
     ~Board();
 
+    int get_move_num() const { return move_num; }
+
     std::string toString() const;
     int score() const;
 
     std::vector<Move> legal_moves() const;
-    char move(Move move);
+    char move(const Move& move);
     void undo_last_move();
+
+    int score_after(Move move) const;
 
 private:
     void _load_board(std::string str_rep);
-    void set(Pos2D pos, char piece);
-    char at(Pos2D pos) const;
+    void set(const Pos2D& pos, char piece);
+    char at(const Pos2D& pos) const;
 
 
     bool is_own_piece(char piece) const;
-    bool is_within_bounds(Pos2D pos) const;
+    bool is_within_bounds(const Pos2D& pos) const;
     // void fields() const;
 
-    int _bonus_score(Pos2D pos, char piece) const;
+    int _bonus_score(const Pos2D& pos, char piece) const;
     int _calc_score() const;
     
     // scanner
