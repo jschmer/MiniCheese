@@ -45,7 +45,7 @@ const std::vector<Pos2D> Board::positions = []() {
     std::vector<Pos2D> tmp;
     for (int x = 1; x < 6; ++x)
         for (int y = 1; y < 7; ++y)
-            tmp.push_back(Pos2D(x, y));
+            tmp.emplace_back(x, y);
     return tmp;
 }();
 
@@ -546,7 +546,7 @@ void Board::scan(std::vector<Move>& move_list,
     //            move_list.append(Move(pos, newpos))
     //            break
             else {
-                move_list.push_back(Move(pos, newpos));
+                move_list.emplace_back(pos, newpos);
                 break;
             }
         }
@@ -557,7 +557,7 @@ void Board::scan(std::vector<Move>& move_list,
     //            # legal move
     //            move_list.append(Move(pos, newpos))
             if (piece == '.')
-                move_list.push_back(Move(pos, newpos));
+                move_list.emplace_back(pos, newpos);
     //        elif self.is_own_piece(piece):
     //            # collision with own piece
     //            break
@@ -569,7 +569,7 @@ void Board::scan(std::vector<Move>& move_list,
     //                # capture enemy piece
     //                move_list.append(Move(pos, newpos))
                 if (no_capture == false)
-                    move_list.push_back(Move(pos, newpos));
+                    move_list.emplace_back(pos, newpos);
     //            break
                 break;
             }

@@ -107,7 +107,7 @@ Move IterativeDeepeningPlayer::generate_move(const Board& board) {
         else if (deeper_value <= -100000) {
     //        # found draw or loss
     //        print("found loss")
-            printf("Found a los! :'(\n");
+            printf("Found a loss! :'(\n");
     //        # return previous move which didn't find a loss or draw
     //        # which guarantees a loss in at least depth-1 moves
     //        # returns shallow_move
