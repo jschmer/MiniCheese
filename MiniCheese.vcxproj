@@ -79,12 +79,14 @@
     <ClCompile Include="src\Board.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Move.cpp" />
+    <ClCompile Include="src\Player\IterativeDeepening.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Common.h" />
     <ClInclude Include="include\MiniCheese\Board.h" />
     <ClInclude Include="include\MiniCheese\Exceptions.h" />
     <ClInclude Include="include\MiniCheese\Move.h" />
+    <ClInclude Include="include\MiniCheese\Player\IterativeDeepening.h" />
     <ClInclude Include="include\MiniCheese\ScanArguments.h" />
     <ClInclude Include="include\MiniCheese\StringHelper.h" />
   </ItemGroup>

@@ -22,3 +22,5 @@ struct ValueError : public MiniCheeseException {
     {}
     ~ValueError() {}
 };
+
+struct TimeUpError : public MiniCheeseException {};
