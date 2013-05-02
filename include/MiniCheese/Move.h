@@ -20,6 +20,7 @@ public:
 
     Pos2D start, end;
 
+    Move();
     Move(Pos2D, Pos2D);
     ~Move();
 

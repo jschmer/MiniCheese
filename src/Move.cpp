@@ -39,6 +39,11 @@ Move parseMove(std::string str) {
 const string Move::cols = "abcde",
              Move::rows = "123456";
 
+Move::Move()
+    : start(), end()
+{
+}
+
 Move::Move(Pos2D start, Pos2D end)
     : start(start), end(end)
 {
