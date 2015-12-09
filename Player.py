@@ -20,9 +20,14 @@ class HumanPlayer(Player):
         The caller ensures that a legal move exists.
         If server checks if the move was legal and calls the function again if not.
         """
-        a = input("Your move: ").strip()
-        move = Move.from_string(a)
-        return move
+
+        while True:
+            a = input("Your move: ").strip()
+            try:
+                move = Move.from_string(a)
+                return move
+            except:
+                print("Wrong move syntax. Try something like this: a2-a3")
 
 
 class RandomPlayer(Player):
